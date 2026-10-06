@@ -2,9 +2,11 @@
 
 K歌由 FXD 维护，基于 **麦动（Maidong KTV）** 修改。**原作者：杨家三郎**；原项目：[coolwuzizai/maidong-ktv](https://github.com/coolwuzizai/maidong-ktv)。完整原作者协议保存在 [LICENSE](LICENSE)。本项目及衍生分发须**完全免费、公开源码、禁止商用**，并保留原作者和原项目署名。第三方组件分别遵循其原有许可；本项目整体不采用 MIT 或 Apache-2.0 许可。
 
-这是从维护项目提交 `0169c2af64337c74ebbe4c255642643ad0db2bc3` 提取的 **NAS 专用公共源码审阅快照**，对应包配置 `0.3.4-beta1`、x86 / Python 3.12。源文件来自固定 Git 对象，没有 Git 历史。此目录的生成不代表已经创建公共仓库或获得飞牛官方上架审核。
+公开源码仓库：[tainxiadiyi/kge-fnos](https://github.com/tainxiadiyi/kge-fnos)。NAS 专用源码基线从维护项目提交 `0169c2af64337c74ebbe4c255642643ad0db2bc3` 提取，对应包配置 `0.3.4-beta1`、x86 / Python 3.12。本仓库以独立初始提交 `4463de22a5c2b9ef3ee36d180c96f3ce00604824` 建立基线，原维护仓库的 Git 历史未导入，后续变更由本仓库的 Git 记录追溯。飞牛应用中心申请结果尚待确认。
 
-包 manifest 的 `maintainer_url` 仍保留原维护仓库地址；拟议的独立公开仓库 `tainxiadiyi/kge-fnos` 尚未创建，只有在获得发布授权并实际建成后才更新该地址。
+`SOURCE-SNAPSHOT.json` 保留初始 217 文件审阅快照的文件摘要、源提交 `0169c2af64337c74ebbe4c255642643ad0db2bc3` 和生成时的发布状态。它描述初始快照；README 后续状态更新以本仓库的 Git 记录为准，当前 README 的摘要已不同于初始快照。
+
+包 manifest 的 `maintainer_url` 保留 `0.3.4-beta1` 的原维护仓库来源元数据；当前公开源码入口是上方的 `tainxiadiyi/kge-fnos` 链接。本次文档更新不更改包 manifest 或已构建的安装包。
 
 ## 当前能力和验收边界
 
@@ -30,7 +32,7 @@ K歌由 FXD 维护，基于 **麦动（Maidong KTV）** 修改。**原作者：�
 
 需要自行准备 Git、Python、Pillow **12.3.0**（仅开发工具）、官方 fnpack、Linux x86_64 / Python 3.12 的离线 wheel，以及 Emscripten。基础运行依赖锁定在 `bridge/requirements.txt`。可选离线评分/时间对齐的额外依赖单独列于 `bridge/requirements-score.txt` 和 `bridge/requirements-alignment.txt`；默认不下载模型或启用生成。可选 KuGou 旁路服务和旧 SSH 安装器未收入本 NAS 快照，不宣称可直接安装。
 
-原构建脚本会读取 `git ls-files`、HEAD 和工作树状态。ZIP 解压后必须先在此目录建立自己的本地 Git 仓库、审阅并提交本快照文件；或将文件导入已审阅的新仓库再提交。不要使用维护仓库中的私有运行数据。新仓库首次提交的 ID 会成为新包 `SOURCE.json` 的 `sourceCommit`，原提交追溯仍保存在 `SOURCE-SNAPSHOT.json`，两个提交 ID 不相同。
+原构建脚本会读取 `git ls-files`、HEAD 和工作树状态。克隆本仓库已有可用的 Git 历史；若使用初始源码 ZIP，解压后需建立自己的本地 Git 仓库、审阅并提交文件，或导入已审阅的新仓库再提交。不要使用维护仓库中的私有运行数据。构建时当前 HEAD 的 ID 会成为新包 `SOURCE.json` 的 `sourceCommit`，原提交追溯仍保存在 `SOURCE-SNAPSHOT.json`，两个提交 ID 不相同。
 
 ```sh
 python -m unittest discover -s bridge -p 'test_*.py' -v
