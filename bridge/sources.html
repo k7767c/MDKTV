@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#131721"><title>K歌 · 音源与设置</title>
+<style>
+:root{color-scheme:dark;--bg:#131721;--panel:#1c2230;--line:#303847;--text:#f4f5fa;--muted:#a5afc2;--accent:#c5f47a;--purple:#bbabff}*{box-sizing:border-box}[hidden]{display:none!important}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.6 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif}main{max-width:1000px;margin:auto;padding:28px 26px max(40px,env(safe-area-inset-bottom))}a{color:var(--accent);text-decoration:none}.back{min-height:44px;display:inline-flex;align-items:center;font-size:14px}h1{font-size:30px;margin:18px 0 6px}h2{font-size:19px;margin:0}h3{font-size:15px;margin:18px 0 8px}p{color:var(--muted);margin:8px 0;font-size:14px}.intro{margin-bottom:24px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}.card{padding:24px;background:var(--panel);border:1px solid var(--line);border-radius:20px;margin-bottom:18px;min-width:0}.grid .card{margin-bottom:0}.wide{grid-column:1/-1}.card-head{display:flex;gap:12px;align-items:center;margin-bottom:12px}.source-icon{width:40px;height:40px;display:grid;place-items:center;border-radius:12px;background:#303b29;color:var(--accent);font-size:22px}.video-icon{background:#34314b;color:var(--purple)}.badge{display:inline-block;color:var(--muted);font-size:12px;border:1px solid var(--line);border-radius:20px;padding:3px 9px;margin-top:5px}.badge.ready{color:var(--accent);border-color:#526b3c}.account{font-size:12px;overflow-wrap:anywhere;color:var(--muted)}.message{color:#dbc8fc;font-size:13px;min-height:20px;overflow-wrap:anywhere}.message.error{color:#ffb9ae}.notice{background:#2a2b25;border:1px solid #535242;border-radius:14px;color:#e7dfb3;padding:13px 16px;margin:18px 0}.notice p{color:inherit}button,input{font:inherit;touch-action:manipulation}button{cursor:pointer;min-height:44px;border:0;border-radius:11px;padding:10px 16px;background:var(--accent);color:#203115;font-weight:650}button.secondary{background:#2c3443;color:var(--text)}button.ghost{background:transparent;color:var(--muted);padding-left:0}button:disabled{opacity:.4;cursor:default}button:focus-visible,a:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--purple);outline-offset:4px}label.field{display:block;color:var(--muted);font-size:12px;margin:14px 0 6px}input:not([type=checkbox]){width:100%;min-width:0;min-height:46px;border:1px solid var(--line);border-radius:11px;background:#141a25;color:var(--text);padding:11px 13px}.check{display:flex;align-items:flex-start;gap:9px;font-size:12px;color:var(--muted);margin:11px 0;cursor:pointer}.check input{accent-color:var(--accent);width:17px;height:17px;margin:2px 0 0;flex-shrink:0}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:18px}.actions button{font-size:13px}details{border-top:1px solid var(--line);margin-top:16px;padding-top:12px}summary{cursor:pointer;color:var(--purple);font-size:13px;min-height:40px;display:flex;align-items:center;gap:8px}summary:before{content:"＋"}details[open]>summary:before{content:"−"}.detail-note{font-size:12px}.library-list{margin:10px 0}.library-list label{padding:9px 0;font-size:13px;border-bottom:1px solid var(--line)}#auth{max-width:560px}.auth-description{font-size:13px}.status-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0}.metric{border:1px solid var(--line);border-radius:13px;padding:13px}.metric strong{display:block;font-size:24px}.metric span{display:block;font-size:11px;color:var(--muted)}.status-row{display:flex;justify-content:space-between;gap:15px;border-bottom:1px solid var(--line);padding:11px 0;font-size:13px}.status-row span{color:var(--muted)}.status-row strong{text-align:right;font-weight:500;overflow-wrap:anywhere}.optional{font-size:10px;color:var(--muted);border:1px solid var(--line);padding:2px 6px;border-radius:5px;margin-left:8px}#qr{display:block;width:256px;max-width:100%;border:12px solid white;border-radius:12px;margin:18px 0;background:white}.footnote{text-align:center;font-size:12px;color:#838da2;margin-top:26px}.loading{opacity:.5;pointer-events:none}.section-title{display:flex;align-items:center;justify-content:space-between;gap:12px}.section-title button{font-size:12px}@media(max-width:700px){main{padding:18px 20px 40px}.grid{grid-template-columns:1fr;gap:16px}.card{padding:20px}.wide{grid-column:auto}h1{font-size:27px}.status-grid{gap:7px}.metric{padding:11px 8px}.metric strong{font-size:22px}.metric span{font-size:10px}}@media(max-width:360px){.status-grid{grid-template-columns:1fr 1fr}}
+.score-job{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--line)}.score-job-info{flex:1;min-width:0}.score-job-title{display:block;font-size:13px;overflow-wrap:anywhere}.score-job-status{display:block;font-size:12px;color:var(--muted);margin-top:3px;overflow-wrap:anywhere}.score-job button{font-size:12px;flex-shrink:0;padding:8px 13px}.score-job progress{display:block;width:100%;height:4px;margin-top:8px;accent-color:var(--accent)}#scoreState{color:var(--purple)}#scoreActionMessage:empty{display:none}
+</style></head><body><main>
+<a id="back" class="back" href="m">← 返回点歌</a><h1>音源与设置</h1><p class="intro">连接你的媒体来源，让家里的音乐随时开唱。</p>
+<div id="notice" class="notice" role="status" hidden></div>
+<form id="auth" class="card" hidden><h2>登录 K歌服务管理账号</h2><p class="auth-description">当前入口修改音源需要安装时设置的 K歌服务账号。启用统一登录后，也可从飞牛应用入口使用 NAS 管理员账号进入。</p><label class="field" for="user">K歌服务账号</label><input id="user" autocomplete="username" name="username" maxlength="128" required><label class="field" for="password">K歌服务密码</label><input id="password" autocomplete="current-password" name="password" type="password" required><p id="authMessage" class="message error" role="alert"></p><div class="actions"><button id="authButton" type="submit">登录管理账号</button></div></form>
+<div class="grid">
+<section class="card" id="musicCard"><div class="card-head"><div class="source-icon" aria-hidden="true">♫</div><div><h2>飞牛音乐</h2><span id="musicState" class="badge">正在读取状态</span></div></div><p>连接飞牛音乐后，同步此账号可访问的音乐曲库。</p><div id="musicAccount" class="account"></div><p id="musicMessage" class="message" role="status"></p><div class="actions"><button id="musicSync" class="secondary" data-admin disabled>刷新曲库</button><button id="musicLogout" class="ghost" data-admin disabled>退出音乐账号</button></div><details id="musicDetails"><summary>连接或更换账号</summary><form id="musicForm"><label class="field" for="musicUrl">飞牛音乐地址</label><input id="musicUrl" type="url" placeholder="https://你的 NAS 地址/music" autocomplete="url" required><label class="field" for="musicUser">音乐账号</label><input id="musicUser" autocomplete="username" maxlength="128" required><label class="field" for="musicPassword">音乐密码</label><input id="musicPassword" type="password" autocomplete="current-password" required><label class="check"><input id="musicRemember" type="checkbox" checked>在此 NAS 记住音源登录</label><label class="check"><input id="musicAuto" type="checkbox">授权过期后自动重新登录（需记住登录）</label><label id="musicHttpLabel" class="check" hidden><input id="musicHttp" type="checkbox">此地址使用内网 HTTP，我确认信任此网络</label><div class="actions"><button type="submit" data-admin disabled>连接飞牛音乐</button></div></form></details></section>
+<section class="card" id="videoCard"><div class="card-head"><div class="source-icon video-icon" aria-hidden="true">▶</div><div><h2>飞牛影视</h2><span id="videoState" class="badge">正在读取状态</span></div></div><p>管理独立的影视账号与可访问媒体库。当前点歌视频来自本地目录，请在应用设置中授权并配置本地目录。</p><div id="videoAccount" class="account"></div><p id="videoMessage" class="message" role="status"></p><div class="actions"><button id="videoLibraries" class="secondary" data-admin disabled>查看媒体库</button><button id="videoLogout" class="ghost" data-admin disabled>退出影视账号</button></div><div id="libraries" hidden><div id="libraryList" class="library-list"></div><button id="saveLibraries" class="secondary" data-admin disabled>保存媒体库选择</button></div><details id="videoDetails"><summary>连接或更换账号</summary><form id="videoForm"><label class="field" for="videoUrl">飞牛影视地址</label><input id="videoUrl" type="url" placeholder="https://你的 NAS 地址/v" autocomplete="url" required><label class="field" for="videoUser">影视账号</label><input id="videoUser" autocomplete="username" maxlength="128" required><label class="field" for="videoPassword">影视密码</label><input id="videoPassword" type="password" autocomplete="current-password" required><label class="check"><input id="videoRemember" type="checkbox" checked>在此 NAS 记住音源登录</label><label class="check"><input id="videoAuto" type="checkbox">授权过期后自动重新登录（需记住登录）</label><label id="videoHttpLabel" class="check" hidden><input id="videoHttp" type="checkbox">此地址使用内网 HTTP，我确认信任此网络</label><div class="actions"><button type="submit" data-admin disabled>连接飞牛影视</button></div></form></details></section>
+<section class="card wide"><div class="section-title"><h2>应用与曲库状态</h2><button id="refreshStatus" class="ghost">刷新状态 ↻</button></div><div class="status-row"><span>访问入口</span><strong id="deployment">正在检查</strong></div><div class="status-row"><span>音乐曲库</span><strong id="musicCatalog">正在读取</strong></div><div class="status-row"><span>本地视频曲库</span><strong id="videoCatalog">正在读取</strong></div><p class="detail-note">在应用设置中授权并配置本地目录。页面不会扫描或下载整个在线音源。</p></section>
+<section class="card wide"><div class="section-title"><h2>评分谱库</h2><button id="refreshScores" class="ghost">刷新概览 ↻</button></div><p>已有评分谱可直接使用；没有评分谱的歌曲仍可自由演唱。</p><div class="status-grid"><div class="metric"><strong id="scoreTotal">—</strong><span>曲库歌曲</span></div><div class="metric"><strong id="scoreReady">—</strong><span>已有评分谱</span></div><div class="metric"><strong id="scorePending">—</strong><span>尚无评分谱</span></div><div class="metric"><strong id="scoreActive">—</strong><span>准备任务</span></div></div><div class="status-row"><span>准备状态</span><strong id="scoreState">正在读取</strong></div><p id="scoreMessage" class="message" role="status">正在读取评分概览…</p><div id="scoreControls" class="actions" hidden><button id="scorePause" class="secondary" disabled>暂停准备</button><button id="scoreResume" disabled>恢复准备</button></div><p id="scoreAccess" class="detail-note" hidden>评分任务由管理员管理，当前账号可查看状态。</p><div id="scoreJobs"></div><details id="scoreRecent" hidden><summary id="scoreRecentTitle">最近未完成任务</summary><div id="scoreRecentJobs"></div></details><p id="scoreActionMessage" class="message" role="status"></p><p class="detail-note">状态在打开设置、操作任务或点击刷新时更新。暂停准备不会暂停歌曲播放。</p></section>
+<section class="card wide"><h2>酷狗伴奏<span class="optional">可选音源</span></h2><p>按点歌需要匹配伴奏，是否可用取决于账号权限和歌曲版本。</p><span id="kugouState" class="badge">正在读取状态</span><p id="kugouMessage" class="message" role="status"></p><details id="kugouDetails"><summary>扫码登录与账号管理</summary><p class="detail-note">使用酷狗音乐 App 扫码，并在手机上确认。授权信息由这台 NAS 保存。</p><img id="qr" alt="使用酷狗音乐 App 扫码登录" hidden><div class="actions"><button id="kugouLogin" data-admin disabled>显示登录二维码</button><button id="kugouLogout" class="secondary" data-admin disabled>退出音源账号</button></div></details></section>
+</div><p class="footnote">音源账号彼此独立 · 密码提交后即清空输入框</p>
+</main><script>
+'use strict';
+const APP_PREFIX=location.pathname.match(/^(\/app\/feiniu-karaoke)(?:\/|$)/)?.[1]||'';
+const localUrl=path=>APP_PREFIX&&path!==APP_PREFIX&&!path.startsWith(APP_PREFIX+'/')?APP_PREFIX+path:path;
+const $=id=>document.getElementById(id);
+$('back').href=localUrl('/m');
+let admin=false,gatewayUser=false,epoch=0,pollTimer,kugouAvailable=false,scoreData=null,scoreBusy=false,scoreSerial=0;
+let gatewayProof='',gatewayProofUntil=0,proofRefresh=null;
+const sourceStates={unconfigured:'尚未连接',unverified:'登录已保存，等待验证',connecting:'正在连接',authenticated:'已连接',login_failed:'登录失败',temporarily_offline:'暂时离线',reauth_required:'需要重新登录',reauthenticating:'正在恢复登录'};
+const syncStates={pending:'等待同步',syncing:'正在同步',ready:'已同步',offline:'暂时离线，保留缓存',cancelled:'同步已停止'};
+const kugouStates={saved:'已保存登录',logged_out:'尚未登录',waiting:'等待扫码',confirm:'已扫码，请在手机上确认',expired:'二维码已过期，请重新获取',error:'连接失败',not_configured:'尚未安装可选音源服务',busy:'正在准备二维码'};
+function message(id,text,error=false){$(id).textContent=text;$(id).classList.toggle('error',error);}
+function setAdmin(value){admin=value;$('auth').hidden=value||gatewayUser;document.querySelectorAll('[data-admin]').forEach(button=>button.disabled=!value);$('kugouLogin').disabled=$('kugouLogout').disabled=!value||!kugouAvailable;updateScoreControls();}
+async function api(path,body,method){
+  const verb=method||(body?'POST':'GET');
+  if(APP_PREFIX&&path!=='/api/tv-auth/session'&&verb!=='GET'&&Date.now()/1000>=gatewayProofUntil-5){
+    if(!proofRefresh)proofRefresh=api('/api/tv-auth/session').finally(()=>{proofRefresh=null;});
+    await proofRefresh;
+  }
+  const headers=body?{'Content-Type':'application/json'}:{};
+  if(path==='/api/tv-auth/session')headers['X-Karaoke-Origin']=location.origin;
+  if(gatewayProof)headers['X-Karaoke-Proof']=gatewayProof;
+  let response;
+  try{response=await fetch(localUrl(path),{method:verb,credentials:'same-origin',cache:'no-store',headers,body:body?JSON.stringify(body):undefined});}
+  catch{throw Error('无法连接 K歌服务，请检查网络后重试。');}
+  const data=await response.json().catch(()=>({error:'服务响应异常，请稍后重试。'}));
+  if(!response.ok){if(response.status===401){setAdmin(false);message('authMessage','请登录 K歌服务管理账号后继续。',true);}throw Error(data.error||'操作失败，请重试。');}
+  if(path==='/api/tv-auth/session'){gatewayProof=typeof data.gatewayProof==='string'?data.gatewayProof:'';gatewayProofUntil=Number(data.gatewayProofExpiresAt)||0;}
+  return data;
+}
+function showSource(source){
+  const kind=source.id;if(!['music','video'].includes(kind))return;
+  $(kind+'State').textContent=sourceStates[source.state]||'状态待确认';$(kind+'State').classList.toggle('ready',source.state==='authenticated');
+  $(kind+'Account').textContent=[source.username,source.url].filter(Boolean).join(' · ');
+  if(source.url)$(kind+'Url').value=source.url;if(source.username)$(kind+'User').value=source.username;
+  $(kind+'Remember').checked=source.remember!==false;$(kind+'Auto').checked=!!source.autoLogin;updateHttp(kind);
+  message(kind+'Message',source.error||'',!!source.error);
+  $(kind+'Details').open=source.state==='unconfigured'||['reauth_required','login_failed'].includes(source.state);
+  if(kind==='video'&&source.state==='unconfigured'){$('libraries').hidden=true;$('libraryList').replaceChildren();}
+}
+function updateHttp(kind){$(kind+'HttpLabel').hidden=!$(kind+'Url').value.trim().toLowerCase().startsWith('http:');}
+async function refreshSources(){
+  try{const session=await api('/api/tv-auth/session');gatewayUser=!!session.gatewayAuthenticated;const data=await api('/api/v2/sources');setAdmin(!!data.admin);(data.sources||[]).forEach(showSource);$('notice').hidden=!(gatewayUser&&!admin);if(gatewayUser&&!admin)$('notice').textContent='已通过飞牛 NAS 登录。当前账号没有应用管理权限；可继续点歌，修改音源请使用 NAS 管理员账号。';}
+  catch(error){$('notice').textContent=error.message;$('notice').hidden=false;for(const kind of ['music','video'])$(kind+'State').textContent='状态读取失败';}
+}
+async function sourceAction(kind,action,body={}){
+  if(!admin){$('auth').hidden=false;$('user').focus();return;}
+  const card=$(kind+'Card');card.classList.add('loading');message(kind+'Message',action==='login'?'正在连接，请稍候…':'正在处理…');
+  try{const result=await api('/api/v2/sources/'+kind+'/'+action,body);showSource(result);message(kind+'Message',action==='logout'?'已退出此音源账号。':action==='sync'?'刷新请求已完成，可在下方查看曲库状态。':'音源连接已更新。');refreshHealth();}
+  catch(error){message(kind+'Message',error.message,true);}
+  finally{card.classList.remove('loading');}
+}
+for(const kind of ['music','video']){
+  $(kind+'Url').addEventListener('input',()=>updateHttp(kind));
+  $(kind+'Auto').onchange=()=>{if($(kind+'Auto').checked)$(kind+'Remember').checked=true;};
+  $(kind+'Remember').onchange=()=>{if(!$(kind+'Remember').checked)$(kind+'Auto').checked=false;};
+  $(kind+'Form').onsubmit=async event=>{event.preventDefault();const body={url:$(kind+'Url').value.trim(),username:$(kind+'User').value.trim(),password:$(kind+'Password').value,remember:$(kind+'Remember').checked,autoLogin:$(kind+'Auto').checked,allowHttp:$(kind+'Http').checked};$(kind+'Password').value='';try{await sourceAction(kind,'login',body);}finally{body.password='';}};
+  $(kind+'Logout').onclick=()=>sourceAction(kind,'logout');
+}
+$('musicSync').onclick=()=>sourceAction('music','sync');
+$('videoLibraries').onclick=async()=>{
+  $('videoLibraries').disabled=true;message('videoMessage','正在读取当前账号可访问的媒体库…');
+  try{const data=await api('/api/v2/sources/video/libraries');$('libraryList').replaceChildren();for(const item of data.items||[]){const label=document.createElement('label');label.className='check';const checkbox=document.createElement('input');checkbox.type='checkbox';checkbox.value=item.id;checkbox.checked=!!item.selected;const text=document.createElement('span');text.textContent=item.name||item.id;label.append(checkbox,text);$('libraryList').append(label);}$('libraries').hidden=false;$('saveLibraries').disabled=!admin||!data.items?.length;message('videoMessage',data.items?.length?'选择此账号可访问的库。':'此账号没有可访问的媒体库。');}
+  catch(error){message('videoMessage',error.message,true);}finally{$('videoLibraries').disabled=!admin;}
+};
+$('saveLibraries').onclick=async()=>{const ids=Array.from($('libraryList').querySelectorAll('input:checked'),item=>item.value);await sourceAction('video','libraries',{ids});};
+async function refreshHealth(){
+  $('refreshStatus').disabled=true;
+  try{const data=await api('/api/v2/health');for(const kind of ['music','video']){const status=data.sources?.[kind];$(kind+'Catalog').textContent=status?(syncStates[status.state]||'状态待确认')+' · '+(Number(status.count)||0)+' 首':'暂时无法读取';}}
+  catch(error){$('musicCatalog').textContent=$('videoCatalog').textContent=error.message;}
+  try{const status=await api('/api/app/status');$('deployment').textContent=status.gateway?'飞牛 NAS 应用入口':status.deployment==='fnos'?'飞牛 NAS 应用 · 直连访问':'K歌服务直连';}
+  catch{$('deployment').textContent=APP_PREFIX?'飞牛 NAS 应用入口':'K歌服务直连';}
+  finally{$('refreshStatus').disabled=false;}
+}
+function updateScoreControls(){
+  const enabled=scoreData?.generationEnabled===true;
+  $('scoreControls').hidden=!enabled;
+  $('scorePause').disabled=!admin||scoreBusy||!enabled||scoreData?.paused===true;
+  $('scoreResume').disabled=!admin||scoreBusy||!enabled||scoreData?.paused!==true;
+  $('scoreAccess').hidden=admin||!enabled;
+  document.querySelectorAll('[data-score-action]').forEach(button=>{
+    const canRetry=scoreData?.generationEnabled===true&&scoreData?.workerAvailable===true&&Number(button.dataset.retryAt||0)<=Date.now()/1000;
+    button.disabled=!admin||scoreBusy||(button.dataset.scoreAction==='retry'&&!canRetry);
+  });
+}
+function renderScoreJobs(container,jobs,recent=false){
+  $(container).replaceChildren();
+  const labels={queued:'等待准备',preparing:'正在准备',waiting_playback:'等待播放结束',paused:'已暂停',error:'准备失败',cancelled:'已取消',ready:'已完成'};
+  for(const job of jobs){
+    const sid=Number(job.songId);if(!Number.isInteger(sid)||sid<=0)continue;
+    const row=document.createElement('div');row.className='score-job';
+    const info=document.createElement('div');info.className='score-job-info';
+    const title=document.createElement('span');title.className='score-job-title';title.textContent=job.title||'歌曲 #'+sid;
+    const status=document.createElement('span');status.className='score-job-status';
+    let description=labels[job.status]||job.message||'等待准备';
+    if(!recent&&scoreData?.paused)description='已暂停 · 保留准备进度';
+    else if(!recent&&scoreData?.playbackActive)description='等待播放结束后继续';
+    if(recent&&Number(job.retryAt)>Date.now()/1000)description+=' · '+new Date(Number(job.retryAt)*1000).toLocaleString('zh-CN',{timeZone:'Asia/Shanghai',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'})+' 后可重试（北京时间）';
+    status.textContent=description;info.append(title,status);
+    const progress=Number(job.progress);
+    if(!recent&&Number.isFinite(progress)){const bar=document.createElement('progress');bar.max=100;bar.value=Math.max(0,Math.min(100,progress));bar.setAttribute('aria-label','评分谱准备进度');info.append(bar);}
+    const action=recent?'retry':'cancel',button=document.createElement('button');button.className='secondary';button.textContent=recent?'重试':'取消';button.dataset.scoreAction=action;button.dataset.retryAt=String(Number(job.retryAt)||0);button.setAttribute('aria-label',(recent?'重试':'取消')+'歌曲 '+sid+' 的评分准备');button.onclick=()=>scoreAction(action,sid);
+    row.append(info,button);$(container).append(row);
+  }
+}
+function showScores(data){
+  scoreData=data;
+  const active=Array.isArray(data.active)?data.active:[],recent=Array.isArray(data.recent)?data.recent.filter(job=>['error','cancelled'].includes(job.status)).slice(0,20):[];
+  $('scoreTotal').textContent=Number(data.total)||0;$('scoreReady').textContent=Number(data.ready)||0;$('scorePending').textContent=(Number(data.pending)||0)+(Number(data.failed)||0);$('scoreActive').textContent=active.length;
+  $('scoreState').textContent=!data.generationEnabled?'仅使用已有评分谱':data.workerAvailable===false?'生成组件未安装':data.paused?'管理员已暂停':data.playbackActive?'播放优先 · 等待播放结束':active.length?'按需准备中':'空闲 · 等待点歌';
+  const failed=Number(data.failed)||0;
+  message('scoreMessage',(!data.generationEnabled?'本地生成已关闭，当前仅使用已有评分谱。':data.workerAvailable===false?'此应用尚未安装评分生成组件，当前仅使用已有评分谱。':'只准备已点歌曲，每次处理一个任务；播放期间自动让出计算资源。')+(failed?' '+failed+' 首此前准备失败。':''));
+  renderScoreJobs('scoreJobs',active);renderScoreJobs('scoreRecentJobs',recent,true);
+  $('scoreRecent').hidden=!recent.length;$('scoreRecentTitle').textContent='最近未完成任务 · '+recent.length;
+  updateScoreControls();
+}
+async function refreshScores(){
+  const serial=++scoreSerial;$('refreshScores').disabled=true;
+  try{const data=await api('/api/score-library');if(serial===scoreSerial)showScores(data);}
+  catch(error){if(serial===scoreSerial)message('scoreMessage',error.message,true);}finally{if(serial===scoreSerial)$('refreshScores').disabled=scoreBusy;}
+}
+async function scoreAction(action,songId){
+  if(!admin){message('scoreActionMessage','只有应用管理员可以管理评分任务。',true);return;}
+  if(scoreBusy)return;
+  scoreBusy=true;++scoreSerial;updateScoreControls();$('refreshScores').disabled=true;message('scoreActionMessage','正在更新评分任务…');
+  try{const result=await api('/api/admin/scoring/'+action,songId?{songId}:{});showScores(result);const messages={pause:'已暂停评分准备，歌曲播放不受影响。',resume:'已恢复评分准备；有歌曲播放时会继续等待。',cancel:'已取消这首歌的评分准备。',retry:'已重新加入准备队列。'};message('scoreActionMessage',messages[action]||'评分任务已更新。');}
+  catch(error){message('scoreActionMessage',error.message,true);}
+  finally{scoreBusy=false;updateScoreControls();$('refreshScores').disabled=false;}
+}
+$('scorePause').onclick=()=>scoreAction('pause');$('scoreResume').onclick=()=>scoreAction('resume');
+function showKugou(data){
+  $('kugouState').textContent=kugouStates[data.status]||'状态待确认';$('kugouState').classList.toggle('ready',data.status==='saved');
+  kugouAvailable=data.status!=='not_configured';$('kugouLogin').disabled=$('kugouLogout').disabled=!admin||!kugouAvailable;
+  message('kugouMessage',data.status==='not_configured'?'此音源是可选组件；未配置时仍可使用飞牛音乐和本地视频。':data.message||'');
+  if(['saved','expired','logged_out','not_configured','error'].includes(data.status)){$('qr').hidden=true;$('qr').removeAttribute('src');clearTimeout(pollTimer);}
+  return data;
+}
+async function kugou(action){return api('/api/sources/kugou/'+action,action==='status'?undefined:{},action==='status'?'GET':'POST');}
+async function refreshKugou(){try{showKugou(await kugou('status'));}catch(error){$('kugouState').textContent='暂不可用';message('kugouMessage',error.message,true);}}
+$('kugouLogin').onclick=async()=>{
+  const generation=++epoch;clearTimeout(pollTimer);$('qr').hidden=true;$('qr').removeAttribute('src');$('kugouLogin').disabled=true;
+  try{const data=await kugou('login');if(generation!==epoch)return;showKugou(data);
+    if(data.image&&/^data:image\/(png|jpeg|gif|webp);base64,/i.test(data.image)){$('qr').src=data.image;$('qr').hidden=false;const end=Date.now()+180000;const poll=async()=>{if(generation!==epoch)return;if(Date.now()>end){showKugou({status:'expired'});return;}try{const result=await kugou('poll');if(generation!==epoch)return;showKugou(result);if(['waiting','confirm'].includes(result.status))pollTimer=setTimeout(poll,3000);}catch(error){message('kugouMessage',error.message,true);}};pollTimer=setTimeout(poll,3000);}
+    else if(data.image)message('kugouMessage','二维码格式暂不支持，请刷新后重试。',true);
+  }catch(error){message('kugouMessage',error.message,true);}finally{$('kugouLogin').disabled=!admin||!kugouAvailable;}
+};
+$('kugouLogout').onclick=async()=>{++epoch;clearTimeout(pollTimer);try{showKugou(await kugou('logout'));}catch(error){message('kugouMessage',error.message,true);}};
+$('auth').onsubmit=async event=>{event.preventDefault();$('authButton').disabled=true;const body={username:$('user').value.trim(),password:$('password').value};$('password').value='';message('authMessage','');try{await api('/api/tv-auth/login',body);await refreshSources();refreshHealth();refreshScores();refreshKugou();}catch(error){message('authMessage',error.message,true);}finally{body.password='';$('authButton').disabled=false;}};
+$('refreshStatus').onclick=()=>{refreshSources();refreshHealth();refreshKugou();};$('refreshScores').onclick=refreshScores;
+window.addEventListener('pagehide',()=>{++epoch;clearTimeout(pollTimer);});
+async function start(){await refreshSources();if(admin||gatewayUser||$('notice').hidden){refreshHealth();refreshScores();refreshKugou();}}
+start();
+</script></body></html>

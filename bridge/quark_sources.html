@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><title>K歌 · 夸克网盘挂载</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,"Microsoft YaHei",sans-serif;color:#f2f1f5;background:#15151d}*{box-sizing:border-box}body{margin:0}main{max-width:950px;margin:auto;padding:24px}a{color:#f6a06e;text-decoration:none}h1{font-size:27px}h2{font-size:20px}p{color:#bbb6c9;line-height:1.65}.top{display:flex;justify-content:space-between;align-items:center}.card{background:#24232e;border:1px solid #3d3a4c;border-radius:14px;padding:21px;margin:18px 0}.actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}button,input{font:inherit}button{border:0;border-radius:9px;padding:11px 15px;min-height:44px;background:#f1a074;color:#251b1a;cursor:pointer}button.secondary{background:#3b3949;color:#eee9f7}button:disabled{opacity:.45;cursor:default}button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #d2b5ff;outline-offset:3px}input[type=text],input[type=password]{display:block;width:100%;background:#181822;border:1px solid #514b62;border-radius:8px;padding:12px;color:#fff;margin:8px 0 14px}.error{color:#ffc0b5;white-space:pre-wrap}.notice{background:#35303b;border-left:4px solid #f1a074;padding:14px;border-radius:6px}#qr{margin:17px 0;background:white;display:inline-flex;border-radius:10px;padding:12px}#qr img{height:250px;width:250px;image-rendering:pixelated}.muted{color:#aaa4b9;font-size:14px}.row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #383444}.row .name{flex:1;overflow-wrap:anywhere}.row button{flex-shrink:0}.folders{list-style:none;padding:0}.breadcrumbs{display:flex;gap:8px;flex-wrap:wrap;margin:15px 0}.breadcrumbs button{padding:7px 11px;min-height:38px}label{color:#cbc5d7}.scanning{color:#ffd298;font-weight:600}[hidden]{display:none!important}@media(max-width:600px){main{padding:16px}.card{padding:16px}.top{gap:12px;align-items:flex-start}h1{font-size:23px}#qr img{width:220px;height:220px}}
+</style></head><body><main>
+<div class="top"><div><h1>夸克网盘挂载</h1><p>选择自己的音乐目录，将歌曲和 MV 加入 K歌。</p></div><a id="back" href="sing">返回 K歌 →</a></div>
+<p class="notice">使用夸克官方 App 扫描二维码并确认授权。网页版采用官方二维码授权；安卓手机版的手机号和短信登录依赖原生登录窗口，当前浏览器页面没有该能力。账号凭据保存在 NAS 的加密存储中。</p>
+<p id="message" role="status" aria-live="polite"></p>
+<form class="card" id="login" hidden><h2>登录 K歌管理账号</h2><p>通过飞牛 NAS 管理员入口可直接管理。其他入口使用安装时设置的 K歌服务账号。</p><label for="user">K歌服务账号</label><input id="user" type="text" autocomplete="username" required maxlength="128"><label for="password">K歌服务密码</label><input id="password" type="password" autocomplete="current-password" required><button type="submit">登录</button></form>
+<section id="content" hidden>
+<section class="card"><h2>夸克账号</h2><p id="accountStatus">正在确认账号状态…</p><div class="actions"><label><input id="remember" type="checkbox" checked> 记住账号</label><button id="begin">生成登录二维码</button><button id="cancel" class="secondary" hidden>取消二维码</button><button id="logout" class="secondary" hidden>退出夸克账号</button></div><div id="qr" hidden></div><p id="qrState" class="muted" role="status"></p></section>
+<section class="card" id="directory" hidden><h2>选择音乐目录</h2><p>进入存放歌曲或 MV 的文件夹，再挂载当前目录。扫描只读取所选目录及其子目录，不会复制或删除网盘文件。</p><nav id="breadcrumbs" class="breadcrumbs" aria-label="网盘目录路径"></nav><div class="actions"><button id="mount">挂载当前目录并扫描</button><button id="refresh" class="secondary">刷新目录</button><label id="rootChoice"><input id="allowRoot" type="checkbox"> 我明确选择网盘根目录及全部子目录</label></div><p id="folderInfo" class="muted"></p><ul id="folders" class="folders" aria-label="网盘文件及目录"></ul><div class="actions"><button id="prev" class="secondary">上一页</button><span id="page"></span><button id="next" class="secondary">下一页</button></div></section>
+<section class="card" id="scanCard" hidden><h2>已挂载的目录</h2><p id="mountStatus"></p><p id="scanStatus" role="status" aria-live="polite"></p><div class="actions"><button id="scan">重新扫描</button><button id="stop" class="secondary" hidden>取消扫描</button></div><p class="muted">只有完整扫描成功才更新曲库；连接中断或取消时保留上次的完整结果。目录里的同名 LRC 会与歌曲一起关联。</p></section>
+</section></main>
+<script>
+const PREFIX=location.pathname.match(/^(\/app\/feiniu-karaoke)(?:\/|$)/)?.[1]||'';
+document.write('<script src="'+PREFIX+'/player-assets/vendor/qrcode.js"><\/script>');
+</script>
+<script>
+'use strict';
+const $=id=>document.getElementById(id), url=path=>PREFIX+path;
+let proof='',proofUntil=0,proofRefresh=null,attemptId='',pollTimer=null,statusTimer=null,source=null;
+let trail=[{id:'0',name:'网盘根目录'}],page=1,more=false,busy=false,browseSerial=0;
+$('back').href=url('/sing');
+function message(text,error=false){$('message').textContent=text;$('message').className=error?'error':'muted';}
+async function api(path,body){
+  if(PREFIX&&body!==undefined&&path!=='/api/tv-auth/session'&&Date.now()/1000>=proofUntil-5){
+    if(!proofRefresh)proofRefresh=api('/api/tv-auth/session').finally(()=>{proofRefresh=null;});await proofRefresh;
+  }
+  const headers=body!==undefined?{'Content-Type':'application/json'}:{};
+  if(path==='/api/tv-auth/session')headers['X-Karaoke-Origin']=location.origin;
+  if(proof)headers['X-Karaoke-Proof']=proof;
+  let response;try{response=await fetch(url(path),{method:body!==undefined?'POST':'GET',credentials:'same-origin',cache:'no-store',headers,body:body!==undefined?JSON.stringify(body):undefined});}catch{throw Error('暂时无法连接 K歌服务，请检查网络。');}
+  const data=await response.json().catch(()=>({error:'服务返回异常'}));
+  if(!response.ok)throw Error(data.error||'操作失败，请稍后重试');
+  if(path==='/api/tv-auth/session'){proof=data.gatewayProof||'';proofUntil=Number(data.gatewayProofExpiresAt)||0;}
+  return data;
+}
+const qapi=(action,body)=>api('/api/v2/sources/quark/'+action,body);
+function controls(){
+  for(const id of ['begin','refresh','mount','prev','next','scan','logout'])$(id).disabled=busy;
+  $('mount').disabled=busy||!source?.connected||(trail.at(-1).id==='0'&&!$('allowRoot').checked);
+  $('prev').disabled=busy||page<=1;$('next').disabled=busy||!more;
+  $('scan').disabled=busy||!source?.connected||!(source?.mounts||[]).length||source?.scan?.state==='scanning';
+}
+async function action(work){if(busy)return;busy=true;controls();message('');try{await work();}catch(error){message(error.message,true);}finally{busy=false;controls();}}
+function renderStatus(data){
+  source=data;$('accountStatus').textContent=data.connected?(data.state==='reauth_required'?'夸克授权已过期，请重新扫码。':'夸克账号已连接。'):'尚未连接夸克账号。';
+  $('directory').hidden=!data.connected;$('logout').hidden=!data.connected;
+  $('begin').textContent=data.connected?'重新扫码或切换账号':'生成登录二维码';
+  $('scanCard').hidden=!(data.mounts||[]).length;
+  $('mountStatus').textContent=(data.mounts||[]).map(mount=>mount.name||'音乐目录').join('、');
+  const scan=data.scan||{},scanning=scan.state==='scanning';
+  $('scanStatus').textContent=(scanning?'正在扫描':scan.state==='ready'?'扫描完成':scan.state==='cancelled'?'扫描已取消':scan.state==='error'?'扫描失败，保留原曲库':'等待扫描')+' · 已检查 '+(scan.checkedFolders||0)+' 个目录、'+(scan.files||0)+' 个文件，找到 '+(scan.songs||0)+' 首曲目';
+  $('scanStatus').className=scanning?'scanning':'muted';$('stop').hidden=!scanning;$('scan').disabled=busy||scanning;
+  if(data.error)message(data.error,true);
+  controls();
+  clearTimeout(statusTimer);if(scanning)statusTimer=setTimeout(refreshStatus,2000);
+}
+async function refreshStatus(){try{renderStatus(await qapi('status'));}catch(error){message(error.message,true);}}
+function clearQr(){clearTimeout(pollTimer);pollTimer=null;attemptId='';$('qr').replaceChildren();$('qr').hidden=true;$('cancel').hidden=true;}
+async function cancelQr(){const old=attemptId;clearQr();if(old)await qapi('cancel',{attemptId:old});$('qrState').textContent='二维码已取消。';}
+async function begin(){
+  await cancelQr();const data=await qapi('begin',{remember:$('remember').checked});attemptId=data.attemptId;
+  if(typeof qrcode!=='function'){await cancelQr();throw Error('二维码组件尚未加载，请刷新页面后重试。');}
+  const code=qrcode(0,'M');code.addData(data.qrLoginUrl);code.make();
+  const img=document.createElement('img');img.alt='用夸克官方 App 扫描此登录二维码';img.src=code.createDataURL(5,4);
+  $('qr').replaceChildren(img);$('qr').hidden=false;$('cancel').hidden=false;$('qrState').textContent='请用夸克官方 App 扫码确认；二维码约 3 分钟有效。';
+  pollTimer=setTimeout(poll,2000);
+}
+async function poll(){
+  const current=attemptId;if(!current)return;
+  try{const result=await qapi('poll',{attemptId:current});if(attemptId!==current)return;
+    if(result.state==='authorized'){clearQr();$('qrState').textContent='官方授权已确认，网盘读取权限验证成功。';trail=[{id:'0',name:'网盘根目录'}];page=1;renderStatus(result.source);await browse();return;}
+    if(result.state==='expired'||result.state==='cancelled'){clearQr();$('qrState').textContent='二维码已失效，请重新生成。';return;}
+    $('qrState').textContent=result.state==='verifying'?'扫码已确认，正在验证网盘读取权限…':'等待官方 App 扫码并确认…';pollTimer=setTimeout(poll,2000);
+  }catch(error){if(attemptId===current){clearQr();message(error.message,true);}}
+}
+function breadcrumbs(){
+  $('breadcrumbs').replaceChildren();trail.forEach((item,index)=>{const button=document.createElement('button');button.type='button';button.className='secondary';button.textContent=item.name;button.onclick=()=>action(async()=>{trail=trail.slice(0,index+1);page=1;await browse();});$('breadcrumbs').append(button);});
+  $('rootChoice').hidden=trail.at(-1).id!=='0';controls();
+}
+async function browse(){
+  const serial=++browseSerial,current=trail.at(-1);breadcrumbs();$('folderInfo').textContent='正在读取当前目录…';
+  const result=await qapi('folders?'+new URLSearchParams({parent:current.id,page}));if(serial!==browseSerial)return;
+  more=result.more;$('page').textContent='第 '+page+' 页';$('folders').replaceChildren();
+  for(const item of result.items){const row=document.createElement('li');row.className='row';const name=document.createElement('span');name.className='name';name.textContent=(item.directory?'📁 ':'♪ ')+item.name;row.append(name);
+    if(item.directory){const button=document.createElement('button');button.className='secondary';button.textContent='进入目录';button.onclick=()=>action(async()=>{trail.push({id:item.id,name:item.name});page=1;await browse();});row.append(button);}$('folders').append(row);}
+  $('folderInfo').textContent=result.items.length?'当前页 '+result.items.length+' 个条目'+(result.total!==null?' · 当前目录共 '+result.total+' 个条目':''):'当前目录是空的。';controls();
+}
+$('begin').onclick=()=>action(begin);$('cancel').onclick=()=>action(cancelQr);
+$('logout').onclick=()=>action(async()=>{await cancelQr();renderStatus(await qapi('logout',{}));message('已退出夸克账号，本机将无法再播放该账号的旧云盘曲目。');});
+$('refresh').onclick=()=>action(browse);$('prev').onclick=()=>action(async()=>{page--;await browse();});$('next').onclick=()=>action(async()=>{page++;await browse();});$('allowRoot').onchange=controls;
+$('mount').onclick=()=>action(async()=>{const current=trail.at(-1);await qapi('mount',{parent:current.id,name:current.name});renderStatus(await qapi('scan',{}));message('已挂载目录并开始扫描。完成后返回 K歌页面刷新曲库。');});
+$('scan').onclick=()=>action(async()=>renderStatus(await qapi('scan',{})));$('stop').onclick=()=>action(async()=>renderStatus(await qapi('scan-cancel',{})));
+$('login').onsubmit=event=>{event.preventDefault();action(async()=>{try{await api('/api/tv-auth/login',{username:$('user').value,password:$('password').value});await start();}finally{$('password').value='';}});};
+async function start(){
+  const session=await api('/api/tv-auth/session');$('login').hidden=!!session.admin;$('content').hidden=!session.admin;
+  if(!session.admin){message(session.authed?'当前账号没有来源管理权限，请通过管理员入口打开。':'请先登录 K歌管理账号。');return;}
+  message('');const status=await qapi('status');renderStatus(status);if(status.connected)await browse();
+}
+window.addEventListener('pagehide',()=>{clearTimeout(pollTimer);clearTimeout(statusTimer);if(attemptId){fetch(url('/api/v2/sources/quark/cancel'),{method:'POST',credentials:'same-origin',keepalive:true,headers:{'Content-Type':'application/json','X-Karaoke-Proof':proof},body:JSON.stringify({attemptId})}).catch(()=>{});}});
+start().catch(error=>message(error.message,true));
+</script></body></html>

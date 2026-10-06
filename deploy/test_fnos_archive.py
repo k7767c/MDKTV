@@ -1,0 +1,64 @@
+import importlib.util
+import io
+from pathlib import Path
+import tarfile
+import unittest
+
+
+spec = importlib.util.spec_from_file_location('build_fpk', Path(__file__).with_name('build_fpk.py'))
+build = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(build)
+
+
+def archive(entries):
+    output = io.BytesIO()
+    with tarfile.open(fileobj=output, mode='w:gz') as tar:
+        for name, kind, content in entries:
+            member = tarfile.TarInfo(name)
+            member.type = kind
+            member.mode = 0o777 if kind == tarfile.DIRTYPE else 0o666
+            member.uid, member.gid = 1234, 5678
+            member.uname, member.gname = 'fixture-user', 'fixture-group'
+            if kind in (tarfile.SYMTYPE, tarfile.LNKTYPE):
+                member.linkname = '/outside-package'
+            member.size = len(content) if kind == tarfile.REGTYPE else 0
+            tar.addfile(member, io.BytesIO(content) if kind == tarfile.REGTYPE else None)
+    return output.getvalue()
+
+
+class ArchiveModeTests(unittest.TestCase):
+    def test_windows_modes_are_fixed_in_outer_and_inner_archive_without_content_loss(self):
+        inner = archive([('server', tarfile.DIRTYPE, b''),
+                         ('server/server.py', tarfile.REGTYPE, b'print("fixture")\n'),
+                         ('ui/icon.png', tarfile.REGTYPE, b'\x89PNG\r\nfixture')])
+        outer = archive([('cmd', tarfile.DIRTYPE, b''),
+                         ('cmd/main', tarfile.REGTYPE, b'#!/bin/sh\nexit 0\n'),
+                         ('cmd/install_callback', tarfile.REGTYPE, b'#!/bin/sh\nexit 0\n'),
+                         ('manifest', tarfile.REGTYPE, b'appname=fixture\n'),
+                         ('app.tgz', tarfile.REGTYPE, inner)])
+        fixed = build.normalize_archive_modes(outer, package=True)
+        with tarfile.open(fileobj=io.BytesIO(fixed), mode='r:gz') as tar:
+            for member in tar.getmembers():
+                self.assertEqual(member.mode, 0o755 if member.isdir() or member.name.startswith('cmd/') else 0o644)
+                self.assertEqual((member.uid,member.gid,member.uname,member.gname),(0,0,'root','root'))
+            self.assertEqual(tar.extractfile('cmd/main').read(), b'#!/bin/sh\nexit 0\n')
+            self.assertEqual(tar.extractfile('manifest').read(), b'appname=fixture\n')
+            with tarfile.open(fileobj=io.BytesIO(tar.extractfile('app.tgz').read()), mode='r:gz') as app:
+                for member in app.getmembers():
+                    self.assertEqual(member.mode, 0o755 if member.isdir() else 0o644)
+                    self.assertEqual((member.uid,member.gid),(0,0))
+                self.assertEqual(app.extractfile('server/server.py').read(), b'print("fixture")\n')
+                self.assertEqual(app.extractfile('ui/icon.png').read(), b'\x89PNG\r\nfixture')
+
+    def test_links_and_special_files_are_rejected_at_both_archive_levels(self):
+        for kind in (tarfile.SYMTYPE, tarfile.LNKTYPE, tarfile.FIFOTYPE, tarfile.CHRTYPE):
+            bad = archive([('unsafe',kind,b'')])
+            with self.subTest(kind=kind), self.assertRaises(ValueError):
+                build.normalize_archive_modes(bad,package=True)
+            outer = archive([('app.tgz',tarfile.REGTYPE,bad)])
+            with self.subTest(kind=kind,inner=True), self.assertRaises(ValueError):
+                build.normalize_archive_modes(outer,package=True)
+
+
+if __name__ == '__main__':
+    unittest.main()

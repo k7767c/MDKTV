@@ -1,0 +1,12 @@
+[
+  {
+    "stepTitle": "设置 K歌",
+    "items": [
+      {"type": "tips", "helpText": "安装后直接从飞牛 NAS 应用入口打开，使用已有 NAS 登录。在音源设置中连接飞牛音乐。下方账号密码仅供电视 / PC 直接连接，可全部保持默认并将密码留空。已有 SSH 版继续保留。"},
+      {"type": "text", "field": "wizard_username", "label": "K歌服务账号", "initValue": "ktv", "rules": [{"required": true, "message": "请设置 K歌服务账号"}]},
+      {"type": "password", "field": "wizard_password", "label": "电视 / PC 连接密码（可选，设置时至少 10 位）"},
+      {"type": "text", "field": "wizard_port", "label": "电视 / PC 连接端口", "initValue": "8086", "rules": [{"required": true, "message": "请填写端口"}, {"pattern": "^[0-9]+$", "message": "端口应为数字"}]},
+      {"type": "tips", "helpText": "手机通过飞牛入口访问，无需填写 IP 或新密码；留空密码时不开放独立连接端口。安装包包含基础依赖，应用中心会先安装 Python 3.12。评分默认复用已有缓存，不会下载模型或自动计算整个曲库。"}
+    ]
+  }
+]

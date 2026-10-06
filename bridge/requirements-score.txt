@@ -1,0 +1,5 @@
+# Install into separate pitch-venv; CPU wheels from https://download.pytorch.org/whl/cpu.
+torch==2.5.1+cpu
+torchaudio==2.5.1+cpu
+demucs==4.0.1
+torchcrepe==0.0.23

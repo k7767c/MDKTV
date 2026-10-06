@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#f4faff">
+  <title>K歌</title>
+  <link rel="stylesheet" href="./player-assets/webapp.css">
+  <link rel="modulepreload" href="./player-assets/webapp.js">
+  <link rel="modulepreload" href="./player-assets/web-player.js">
+  <link rel="modulepreload" href="./player-assets/web-audio.js">
+</head>
+<body>
+  <main id="appCanvas" class="app" aria-label="K歌本机演唱">
+    <section id="page" aria-live="polite">
+      <div class="page-view home-view" aria-busy="true">
+        <img class="logo" alt="" src="./player-assets/images/thumbs/pc_logo.png" loading="lazy" decoding="async">
+        <div class="brand">K歌</div><div class="motto">让音乐点亮生活</div>
+        <form class="search" role="search"><input type="search" placeholder="搜索歌曲、歌手或拼音" aria-label="搜索歌曲、歌手或拼音" disabled><button type="button" disabled aria-label="搜索">⌕</button></form>
+        <div class="home-cards" aria-label="界面加载完成后可使用">
+          <button class="home-card" type="button" disabled><strong>全部歌曲</strong><small>海量曲库任你唱</small><span class="arrow">›</span></button>
+          <button class="home-card" type="button" disabled><strong>MV / 视频</strong><small>精彩MV 随心看</small><span class="arrow">›</span></button>
+          <button class="home-card" type="button" disabled><strong>排行榜</strong><small>热门新歌 一网打尽</small><span class="arrow">›</span></button>
+          <button class="home-card" type="button" disabled><strong>歌手</strong><small>发现喜爱的歌手</small><span class="arrow">›</span></button>
+          <button class="home-card" type="button" disabled><strong>已点</strong><small>查看待唱歌曲</small><span class="arrow">›</span></button>
+          <button class="home-card" type="button" disabled><strong>人声音效</strong><small>多种音效 随心演唱</small><span class="arrow">›</span></button>
+        </div>
+        <div class="recent-heading">最近播放</div>
+        <div class="recent-grid"><p class="group-message" role="status">正在加载本机演唱界面，按钮加载后可用。<br>若长时间未完成，请 <a href="?reload=1">重新加载页面</a> 或返回飞牛应用后重试。</p></div>
+        <div class="mini-player"><span class="mini-info"><strong>尚未播放</strong><small>点歌后开始演唱</small></span></div>
+      </div>
+    </section>
+    <section id="mediaHost" class="media-host" aria-label="本机演唱舞台">
+      <img id="stageCover" class="stage-cover" alt="" src="./player-assets/images/thumbs/pc_home_stage.png" loading="lazy" decoding="async">
+      <video id="media" playsinline preload="metadata"></video>
+      <div class="stage-shade"></div>
+      <div id="stageStatus" class="stage-status">点歌后显示同步歌词</div>
+      <div id="stageScore" class="stage-score">自由演唱</div>
+      <canvas id="pitchLane" width="800" height="180" aria-label="实时收音音高"></canvas>
+      <div id="stageSentence" class="stage-sentence"></div>
+      <div id="stageLyric" class="stage-lyric">点一首喜欢的歌</div>
+      <div id="stageNext" class="stage-next">在当前手机或电脑播放、演唱</div>
+      <button id="stageExpand" class="stage-expand" aria-label="进入演唱全屏"></button>
+    </section>
+    <section id="singingControls" class="singing-controls" hidden aria-label="演唱控制"></section>
+    <nav id="navigation" class="navigation" aria-label="主要页面">
+      <button class="nav-button active" type="button" disabled>首页</button>
+      <button class="nav-button" type="button" disabled>点歌</button>
+      <button class="nav-button" type="button" disabled>已点</button>
+      <button class="nav-button" type="button" disabled>我的</button>
+    </nav>
+  </main>
+  <input id="localFiles" type="file" accept="audio/*,video/*,.mp3,.flac,.wav,.m4a,.ogg,.aac,.mp4,.mkv,.mpg,.mpeg,.webm,.lrc" multiple hidden>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <dialog id="dialog" aria-labelledby="dialogTitle">
+    <div class="dialog-top"><h2 id="dialogTitle"></h2><button id="dialogClose" class="icon-close" aria-label="关闭">×</button></div>
+    <div id="dialogBody"></div>
+  </dialog>
+  <noscript>K歌需要开启 JavaScript 才能本机播放与演唱。</noscript>
+  <script type="module" src="./player-assets/webapp.js"></script>
+</body>
+</html>

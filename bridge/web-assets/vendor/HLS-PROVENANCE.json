@@ -1,0 +1,9 @@
+{
+  "name": "hls.js",
+  "version": "1.7.3",
+  "upstream": "https://github.com/video-dev/hls.js",
+  "registryTarball": "https://registry.npmjs.org/hls.js/-/hls.js-1.7.3.tgz",
+  "registryIntegrity": "sha512-MsPlx6yVW4Qv4C7mEVou4/gk/5cN2dVxOTnrNjPSmyH2f0Ln+/UkG10Ax1PE6OvrmTVPKgQYozTtBaPOuCzq7A==",
+  "sha256": "a12e7ee1cd64a69dcdb314157e45dafcba705bfb0b1440b7935cb265d374423e",
+  "license": "Apache-2.0"
+}

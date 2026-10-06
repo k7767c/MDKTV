@@ -1,0 +1,4 @@
+aiohttp==3.13.3
+numpy==2.2.6
+cryptography==46.0.5
+pypinyin==0.55.0

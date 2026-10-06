@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="zh-CN"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#131721">
+<title>飞牛 K歌 · 手机点歌</title>
+<style>
+:root{color-scheme:dark;--bg:#131721;--panel:#1c2230;--line:#303847;--text:#f4f5fa;--muted:#a5afc2;--accent:#c5f47a;--purple:#bbabff}*{box-sizing:border-box}[hidden]{display:none!important}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.55 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif}button,input{font:inherit;touch-action:manipulation}button,a{-webkit-tap-highlight-color:transparent}button{cursor:pointer;border:0;min-height:44px;border-radius:12px;background:var(--accent);color:#203115;padding:10px 16px;font-weight:650}button:disabled{cursor:default;opacity:.45}button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(--purple);outline-offset:4px}a{color:var(--accent);text-decoration:none}button.secondary{background:#2c3443;color:var(--text)}.wrap{max-width:1060px;margin:auto;padding:22px 26px 150px}header{display:flex;align-items:center;gap:12px;margin-bottom:38px}.brand-icon{height:42px;width:42px;border-radius:13px;display:grid;place-items:center;background:var(--accent);color:#203115;font-size:28px;font-weight:800}.brand{font-size:20px;font-weight:750;letter-spacing:.04em}.brand small{display:block;color:var(--muted);font-size:10px;letter-spacing:.14em;font-weight:500}.header-end{margin-left:auto;display:flex;align-items:center;gap:14px}.settings-link{min-height:44px;display:flex;align-items:center;gap:5px;color:var(--muted)}.pill{display:inline-flex;align-items:center;gap:7px;font-size:12px;border:1px solid var(--line);border-radius:99px;padding:6px 10px;color:var(--muted);white-space:nowrap}.dot{width:6px;height:6px;background:#8993a7;border-radius:50%}.online .dot{background:var(--accent)}.online{color:var(--accent)}.eyebrow{color:var(--accent);font-size:11px;font-weight:700;letter-spacing:.14em}h1{font-size:34px;line-height:1.3;margin:10px 0}h2{font-size:20px;margin:0 0 10px}p{color:var(--muted);margin:8px 0}.hero{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:28px}.equalizer{display:flex;align-items:center;gap:7px;height:74px;margin-right:20px}.equalizer span{width:9px;border-radius:9px;background:var(--purple);height:30px}.equalizer span:nth-child(2){height:52px}.equalizer span:nth-child(3){height:74px;background:var(--accent)}.equalizer span:nth-child(4){height:43px}.equalizer span:nth-child(5){height:22px}.notice{border:1px solid #535242;background:#2a2b25;border-radius:14px;color:#e7dfb3;padding:12px 15px;margin:16px 0;font-size:14px}.notice a{display:inline-block;margin-left:8px}.login-card{max-width:520px;background:var(--panel);padding:24px;border:1px solid var(--line);border-radius:22px;margin:24px 0}.login-card label{display:block;color:var(--muted);font-size:13px;margin:16px 0 6px}input{min-width:0;min-height:46px;border:1px solid var(--line);border-radius:12px;background:#141a25;color:var(--text);padding:12px 14px}.login-card input{width:100%}.login-card button{margin-top:20px;width:100%}.error{color:#ffb9ae}.toolbar{border:1px solid var(--line);background:var(--panel);padding:16px;border-radius:20px;margin-bottom:25px}.search-form{display:flex;gap:10px}.search-field{position:relative;flex:1}.search-field svg{position:absolute;top:14px;left:14px;color:var(--muted);pointer-events:none}.search-field input{width:100%;padding-left:44px;background:#131923}.filters{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.filter{min-height:36px;background:transparent;color:var(--muted);border:1px solid transparent;border-radius:9px;font-size:13px;padding:6px 14px}.filter[aria-pressed=true]{background:#343c2e;color:var(--accent);border-color:#566548}.library-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}.tabs{display:flex;gap:24px}.tab{position:relative;background:transparent;color:var(--muted);border-radius:0;padding:12px 0;font-size:17px}.tab[aria-selected=true]{color:var(--text)}.tab[aria-selected=true]:after{content:"";height:3px;background:var(--accent);position:absolute;bottom:0;left:0;right:0;border-radius:2px}.count{font-size:11px;padding:2px 7px;border-radius:6px;background:#2c3443;margin-left:6px;color:var(--muted)}.library-meta{margin-left:auto;color:var(--muted);font-size:12px}.refresh{background:none;color:var(--muted);padding:8px 4px;min-height:40px;font-size:12px}.song-list{margin:0;padding:0;list-style:none}.song{display:flex;align-items:center;gap:14px;padding:15px 0;border-bottom:1px solid #272e3a}.art{flex:none;height:56px;width:56px;position:relative;display:grid;place-items:center;overflow:hidden;border-radius:12px;background:#282d41;color:var(--purple);font-size:25px}.art img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.song-info{min-width:0;flex:1}.song-title{display:block;font-size:16px;font-weight:600;overflow-wrap:anywhere}.song-sub{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:4px}.media-tag{font-size:10px;padding:1px 5px;border:1px solid #454657;border-radius:4px;color:var(--purple)}.playing-tag{color:var(--accent);font-size:11px}.song-action{min-width:62px;min-height:40px;font-size:13px;padding:8px 12px;flex-shrink:0;background:#2e3a28;color:var(--accent)}.song-action.remove{background:#2c3443;color:var(--muted)}.empty{text-align:center;background:var(--panel);border:1px dashed var(--line);border-radius:18px;padding:40px 20px;margin:18px 0}.empty-symbol{color:var(--purple);font-size:34px}.empty h3{font-size:18px;margin:8px 0}.empty p{font-size:14px;max-width:420px;margin:8px auto 18px}.pagination{display:flex;align-items:center;justify-content:center;gap:20px;margin:25px 0}.pagination button{background:#252e3d;color:var(--muted);font-size:13px;padding:9px 14px}.pagination span{font-size:13px;color:var(--muted)}.footnote{font-size:12px;color:#838da2;text-align:center;margin-top:24px}.player-shell{position:fixed;bottom:0;left:0;right:0;padding:12px 24px max(14px,env(safe-area-inset-bottom));background:#131721f5;border-top:1px solid var(--line);backdrop-filter:blur(14px);z-index:5}.player{max-width:1008px;margin:auto;display:flex;align-items:center;gap:15px}.player-art{width:46px;height:46px;border-radius:50%;background:#343149;display:grid;place-items:center;color:var(--purple);font-size:22px;flex:none}.player-info{min-width:0;flex:1}.player-title{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:650}.player-sub{font-size:11px;color:var(--muted);margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.player-actions{display:flex;align-items:center;gap:10px;flex:none}.player-actions button{height:44px;width:44px;border-radius:50%;display:grid;place-items:center;padding:0}.player-actions .next{background:#2c3443;color:var(--text)}svg{vertical-align:middle;flex-shrink:0}#toast{position:fixed;bottom:105px;left:50%;transform:translateX(-50%);width:max-content;max-width:calc(100% - 32px);padding:11px 18px;border:1px solid #4e596e;background:#313b4e;color:var(--text);box-shadow:0 8px 28px #0005;border-radius:12px;font-size:14px;z-index:10;text-align:center}#loadStatus{font-size:13px;color:var(--muted);min-height:20px}.loading{opacity:.5;pointer-events:none}@media(max-width:600px){.wrap{padding:18px 20px 140px}header{margin-bottom:31px}.brand{font-size:18px}.brand-icon{width:38px;height:38px}.header-end{gap:10px}.header-end .pill{padding:5px 7px;font-size:10px}.settings-link{font-size:12px}.hero{margin-bottom:22px}h1{font-size:28px}.hero p{font-size:13px}.equalizer{gap:5px;margin:0;height:60px}.equalizer span{width:6px}.equalizer span:nth-child(3){height:60px}.toolbar{padding:12px}.search-form{gap:8px}.search-form button{padding:10px 15px}.filters{gap:4px}.filter{padding:5px 12px}.song{gap:11px}.art{width:49px;height:49px;border-radius:10px}.song-title{font-size:15px}.song-sub{font-size:11px;gap:6px}.song-action{min-width:56px;padding:7px 10px}.tabs{gap:20px}.tab{font-size:16px}.library-meta{display:none}.player-shell{padding-left:20px;padding-right:20px}.player{gap:10px}.player-actions{gap:8px}.player-art{width:38px;height:38px}.player-actions button{height:42px;width:42px}.login-card{padding:20px}.eyebrow{font-size:10px}}
+</style></head><body>
+<div class="wrap">
+<header><div class="brand-icon" aria-hidden="true">♫</div><div class="brand">飞牛 K歌<small>YOUR HOME STAGE</small></div><div class="header-end"><span class="pill" id="connection"><span class="dot"></span><span id="connectionText">连接中</span></span><a class="settings-link" id="settingsLink" href="sources">音源设置 ↗</a></div></header>
+<section class="hero"><div><div class="eyebrow">NAS 家庭点歌台</div><h1>今晚，唱你喜欢的。</h1><p>用手机点歌，把舞台交给大屏。</p></div><div class="equalizer" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div></section>
+<div id="serviceNotice" class="notice" role="status" hidden></div>
+<form id="login" class="login-card" hidden><h2>登录 K歌服务</h2><p>当前访问入口需要登录。请输入安装飞牛 K歌时设置的服务账号；通过已启用统一登录的飞牛应用入口打开时，可直接进入。</p><label for="user">K歌服务账号</label><input id="user" name="username" autocomplete="username" required maxlength="128"><label for="pass">K歌服务密码</label><input id="pass" name="password" type="password" autocomplete="current-password" required><p id="loginError" class="error" role="alert"></p><button id="loginButton" type="submit">登录并开始点歌</button></form>
+<section id="controls" hidden>
+<div class="toolbar"><form id="searchForm" class="search-form" role="search"><div class="search-field"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg><input id="q" type="search" placeholder="搜索歌曲、歌手" aria-label="搜索歌曲或歌手" enterkeyhint="search" autocomplete="off"></div><button type="submit">搜索</button></form><div class="filters" role="group" aria-label="曲目类型"><button class="filter" data-kind="" aria-pressed="true">全部曲目</button><button class="filter" data-kind="audio" aria-pressed="false">音乐</button><button class="filter" data-kind="mv" aria-pressed="false">MV / 视频</button></div></div>
+<div class="library-head"><div class="tabs" role="tablist" aria-label="曲库与队列"><button id="songsTab" class="tab" role="tab" aria-selected="true" aria-controls="songs">我的曲库</button><button id="queueTab" class="tab" role="tab" aria-selected="false" aria-controls="songs">已点歌曲<span id="queueCount" class="count">0</span></button></div><span id="total" class="library-meta"></span><button id="refresh" class="refresh" aria-label="刷新当前列表">刷新 ↻</button></div>
+<div id="loadStatus" role="status" aria-live="polite"></div><ul id="songs" class="song-list" aria-label="歌曲列表"></ul>
+<div id="empty" class="empty" hidden><div class="empty-symbol" aria-hidden="true">♫</div><h3 id="emptyTitle"></h3><p id="emptyDescription"></p><a id="emptyLink" href="sources">连接我的音源 →</a><button id="retry" class="secondary" hidden>重新加载</button></div>
+<nav id="pagination" class="pagination" aria-label="曲目分页"><button id="prev">上一页</button><span id="page">1 / 1</span><button id="more">下一页</button></nav>
+<p class="footnote">音乐来自你的 NAS · 播放和演唱在已连接的大屏上进行</p></section></div>
+<div id="playerShell" class="player-shell" hidden><div class="player"><div class="player-art" aria-hidden="true">♪</div><div class="player-info"><div id="playingTitle" class="player-title">还没有待唱歌曲</div><div id="playingStatus" class="player-sub">等待大屏播放设备连接</div></div><div class="player-actions"><button id="pause" aria-label="暂停或继续播放" disabled><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path id="pauseIcon" d="M7 5h4v14H7zm6 0h4v14h-4z"/></svg></button><button id="next" class="next" aria-label="下一首" disabled><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m5 5 10 7-10 7zm11 0h3v14h-3z"/></svg></button></div></div></div>
+<div id="toast" role="status" aria-live="polite" hidden></div>
+<script>
+'use strict';
+// Use the same fnOS gateway prefix for pages, API, covers and WebSocket.
+const APP_PREFIX = location.pathname.match(/^(\/app\/feiniu-karaoke)(?:\/|$)/)?.[1] || '';
+const localUrl = path => APP_PREFIX && path!==APP_PREFIX && !path.startsWith(APP_PREFIX+'/') ? APP_PREFIX+path : path;
+const $ = id => document.getElementById(id);
+const state = {page:1,mode:'songs',total:0,kind:'',queue:[],queueRevision:0,player:'',paused:false,ws:null,retry:null,serial:0,authed:false,pendingKey:'',abort:null};
+let toastTimer,catalogTimer;
+let gatewayProof='',gatewayProofUntil=0,proofRefresh=null;
+for(const id of ['settingsLink','emptyLink']) $(id).href=localUrl('/sources');
+function say(message){$('toast').textContent=message;$('toast').hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>{$('toast').hidden=true;},4500);}
+function connection(text,online=false){$('connectionText').textContent=text;$('connection').classList.toggle('online',online);}
+function needLogin(message=''){state.authed=false;clearTimeout(state.retry);if(state.ws)state.ws.close();$('login').hidden=false;$('controls').hidden=true;$('playerShell').hidden=true;$('loginError').textContent=message;connection('等待登录');}
+async function api(path,body,method,signal){
+  const verb=method||(body?'POST':'GET');
+  if(APP_PREFIX&&path!=='/api/tv-auth/session'&&verb!=='GET'&&Date.now()/1000>=gatewayProofUntil-5){
+    if(!proofRefresh)proofRefresh=api('/api/tv-auth/session').finally(()=>{proofRefresh=null;});
+    await proofRefresh;
+  }
+  const headers=body?{'Content-Type':'application/json'}:{};
+  if(path==='/api/tv-auth/session')headers['X-Karaoke-Origin']=location.origin;
+  if(gatewayProof)headers['X-Karaoke-Proof']=gatewayProof;
+  let response;
+  try{response=await fetch(localUrl(path),{method:verb,credentials:'same-origin',cache:'no-store',headers,body:body?JSON.stringify(body):undefined,signal});}
+  catch(error){if(error.name==='AbortError')throw error;throw Error('暂时无法连接 K歌服务，请检查网络后重试。');}
+  const data=await response.json().catch(()=>({error:'服务返回异常，请稍后重试。'}));
+  if(!response.ok){if(response.status===401)needLogin('请登录 K歌服务后继续。');throw Error(data.error||'操作失败，请重试。');}
+  if(path==='/api/tv-auth/session'){gatewayProof=typeof data.gatewayProof==='string'?data.gatewayProof:'';gatewayProofUntil=Number(data.gatewayProofExpiresAt)||0;}
+  return data;
+}
+function updatePlayer(){
+  const current=state.queue[0];$('queueCount').textContent=state.queue.length;
+  $('playingTitle').textContent=current?current.title||'未命名歌曲':'还没有待唱歌曲';
+  $('playingStatus').textContent=state.player?state.player+(current?' · '+(state.paused?'已暂停':'已连接'):' · 点一首开始吧'):'等待大屏播放设备连接 · 可以先点歌';
+  const connected=state.ws?.readyState===WebSocket.OPEN;
+  $('pause').disabled=$('next').disabled=!(connected&&state.player&&current);
+  $('pause').setAttribute('aria-label',state.paused?'继续播放':'暂停播放');
+  $('pauseIcon').setAttribute('d',state.paused?'m8 5 11 7-11 7z':'M7 5h4v14H7zm6 0h4v14h-4z');
+}
+function setQueue(rows){state.queue=Array.isArray(rows)?rows:[];state.queueRevision++;updatePlayer();if(state.mode==='queue')render(state.queue);}
+function empty(title,description,{link=false,retry=false}={}){$('empty').hidden=false;$('emptyTitle').textContent=title;$('emptyDescription').textContent=description;$('emptyLink').hidden=!link;$('retry').hidden=!retry;}
+function render(rows){
+  $('songs').replaceChildren();$('empty').hidden=true;
+  const inQueue=state.mode==='queue';
+  for(const song of rows){
+    const row=document.createElement('li');row.className='song';
+    const art=document.createElement('div');art.className='art';art.textContent=song.media_kind==='mv'?'▶':'♪';art.setAttribute('aria-hidden','true');
+    const image=document.createElement('img');image.src=localUrl('/api/cover/'+encodeURIComponent(song.song_id||song.id));image.alt='';image.loading='lazy';image.onerror=()=>image.remove();art.append(image);
+    const info=document.createElement('div');info.className='song-info';
+    const title=document.createElement('span');title.className='song-title';title.textContent=song.title||'未命名歌曲';
+    const sub=document.createElement('div');sub.className='song-sub';
+    const artist=document.createElement('span');artist.textContent=song.artist||'未知歌手';
+    const tag=document.createElement('span');tag.className='media-tag';tag.textContent=song.media_kind==='mv'?'MV':'音乐';sub.append(artist,tag);
+    if(inQueue&&song.status==='playing'){const playing=document.createElement('span');playing.className='playing-tag';playing.textContent=state.player?'当前曲目':'待播放';sub.append(playing);}
+    info.append(title,sub);
+    const button=document.createElement('button');button.className='song-action'+(inQueue?' remove':'');button.textContent=inQueue?'移除':'+ 点歌';button.setAttribute('aria-label',(inQueue?'移除 ':'点歌 ')+(song.title||'未命名歌曲'));
+    button.onclick=async()=>{button.disabled=true;const revision=state.queueRevision;try{const result=await api(inQueue?'/api/queue/'+encodeURIComponent(song.queue_id):'/api/queue',inQueue?null:{song_id:song.id||song.song_id},inQueue?'DELETE':'POST');if(!inQueue)setQueue(result);else if(state.queueRevision===revision)setQueue(await api('/api/queue'));say(inQueue?'已移除歌曲':'已加入待唱队列');}catch(error){say(error.message);}finally{button.disabled=false;}};
+    row.append(art,info,button);$('songs').append(row);
+  }
+  const total=inQueue?rows.length:state.total;
+  $('total').textContent=(inQueue?'待唱 ':'共 ')+total+' 首';$('page').textContent=state.page+' / '+Math.max(1,Math.ceil(total/30));
+  $('prev').disabled=state.page<=1;$('more').disabled=state.page*30>=total;$('pagination').hidden=inQueue||total<=30;
+  if(!rows.length){
+    if(inQueue)empty('待唱队列还是空的','回到「我的曲库」，把喜欢的歌加入待唱队列。');
+    else if($('q').value.trim()||state.kind)empty('没有找到匹配的歌曲','试试其他歌名、歌手，或切换到全部曲目。');
+    else empty('先连接你的音乐','连接飞牛音乐，或在应用设置中授权并配置本地目录。',{link:true});
+  }
+}
+async function load(force=false){
+  const path=state.mode==='queue'?'/api/queue':'/api/songs?'+new URLSearchParams({page:state.page,pageSize:30,q:$('q').value.trim(),media_kind:state.kind});
+  if(!force&&state.pendingKey===path)return;
+  if(state.abort)state.abort.abort();state.abort=new AbortController();state.pendingKey=path;
+  const serial=++state.serial;
+  $('loadStatus').textContent='正在读取'+(state.mode==='queue'?'待唱队列':'曲库')+'…';$('songs').classList.add('loading');$('empty').hidden=true;
+  try{
+    const data=await api(path,undefined,undefined,state.abort.signal);
+    if(serial!==state.serial)return;
+    if(state.mode==='queue')setQueue(data);else{state.total=Number(data.total)||0;render(data.items||[]);}
+    $('loadStatus').textContent='';
+  }catch(error){if(serial===state.serial&&error.name!=='AbortError'){$('songs').replaceChildren();$('pagination').hidden=true;$('loadStatus').textContent='';empty('暂时没能读取歌曲',error.message,{retry:true});}}
+  finally{if(serial===state.serial){state.pendingKey='';state.abort=null;$('songs').classList.remove('loading');}}
+}
+function switchMode(mode){state.mode=mode;state.page=1;$('songsTab').setAttribute('aria-selected',mode==='songs');$('queueTab').setAttribute('aria-selected',mode==='queue');load();}
+function connect(){
+  clearTimeout(state.retry);if(!state.authed)return;
+  if(state.ws){state.ws.onclose=null;state.ws.close();}
+  connection('连接中');
+  const url=new URL(localUrl('/ws'),location.origin);url.protocol=location.protocol==='https:'?'wss:':'ws:';
+  const ws=state.ws=new WebSocket(url.href,gatewayProof?['feiniu-karaoke','fnos-proof.'+gatewayProof]:[]);
+  ws.onopen=()=>{connection('服务在线',true);updatePlayer();};
+  ws.onmessage=event=>{try{const message=JSON.parse(event.data);if(message.type==='queue')setQueue(message.data);if(message.type==='player_changed'){state.player=message.activeDeviceId?(message.activeDeviceName||'大屏播放设备'):'';updatePlayer();}if(['progress','state'].includes(message.type)&&typeof message.paused==='boolean'){state.paused=message.paused;updatePlayer();}if(message.type==='catalog_changed'&&state.mode==='songs'){clearTimeout(catalogTimer);catalogTimer=setTimeout(()=>{if(state.mode==='songs')load(true);},250);}}catch{/* Keep the last verified state on malformed messages. */}};
+  ws.onclose=event=>{if(state.ws!==ws)return;state.player='';updatePlayer();if(!state.authed)return;connection('连接已断开');if(event.code===1008){needLogin('登录已过期，请重新登录。');return;}state.retry=setTimeout(()=>start(false),5000);};
+  ws.onerror=()=>connection('连接中断');
+}
+async function sourceNotice(){
+  try{const data=await api('/api/v2/sources');const music=(data.sources||[]).find(item=>item.id==='music');if(!music||music.state==='unconfigured'||['reauth_required','login_failed','temporarily_offline'].includes(music.state)){$('serviceNotice').replaceChildren();const message=document.createElement('span');message.textContent=!music||music.state==='unconfigured'?'飞牛音乐尚未连接，本地视频仍可单独使用。':'音乐来源需要检查，已缓存的曲库可能不是最新状态。';const link=document.createElement('a');link.href=localUrl('/sources');link.textContent='查看音源';$('serviceNotice').append(message,link);$('serviceNotice').hidden=false;}else $('serviceNotice').hidden=true;}catch{/* The song list supplies the actionable connection error. */}
+}
+async function start(refresh=true){
+  try{const session=await api('/api/tv-auth/session');if(!session.authed){needLogin();return;}state.authed=true;$('login').hidden=true;$('controls').hidden=false;$('playerShell').hidden=false;connect();if(refresh){load();sourceNotice();}}
+  catch(error){connection('无法连接');$('serviceNotice').textContent=error.message;$('serviceNotice').hidden=false;$('controls').hidden=false;empty('服务暂不可用','检查网络后点击重试。',{retry:true});$('pagination').hidden=true;if(state.authed){clearTimeout(state.retry);state.retry=setTimeout(()=>start(false),10000);}}
+}
+$('login').onsubmit=async event=>{event.preventDefault();$('loginButton').disabled=true;$('loginError').textContent='';const credentials={username:$('user').value.trim(),password:$('pass').value};$('pass').value='';try{await api('/api/tv-auth/login',credentials);start();}catch(error){$('loginError').textContent=error.message;}finally{credentials.password='';$('loginButton').disabled=false;}};
+$('searchForm').onsubmit=event=>{event.preventDefault();switchMode('songs');};
+document.querySelectorAll('[data-kind]').forEach(button=>button.onclick=()=>{state.kind=button.dataset.kind;document.querySelectorAll('[data-kind]').forEach(item=>item.setAttribute('aria-pressed',item===button));switchMode('songs');});
+$('songsTab').onclick=()=>switchMode('songs');$('queueTab').onclick=()=>switchMode('queue');
+$('prev').onclick=()=>{if(state.page>1){state.page--;load();}};$('more').onclick=()=>{if(state.page*30<state.total){state.page++;load();}};
+$('refresh').onclick=()=>{load(true);sourceNotice();};$('retry').onclick=()=>start();
+function control(action){if(state.ws?.readyState===WebSocket.OPEN&&state.player){state.ws.send(JSON.stringify({type:'control',action}));say(action==='next'?'已向大屏发送下一首指令':'已向大屏发送播放指令');}else say('大屏播放设备尚未连接。');}
+$('pause').onclick=()=>control('play_pause');$('next').onclick=()=>control('next');
+window.addEventListener('online',()=>{if(state.authed)start(false);});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&state.authed&&state.ws?.readyState!==WebSocket.OPEN)start(false);});
+window.addEventListener('pagehide',()=>{state.authed=false;clearTimeout(state.retry);clearTimeout(catalogTimer);if(state.abort)state.abort.abort();if(state.ws)state.ws.close();});
+window.addEventListener('pageshow',event=>{if(event.persisted)start();});
+start();
+</script></body></html>

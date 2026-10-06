@@ -1,0 +1,4 @@
+DSPFilters by Vinnie Falco
+https://github.com/vinniefalco/DSPFilters
+Commit: acc49170e79a94fcb9c04b8a2116e9f8dffd1c7d
+License: MIT (retained in each source file). Unmodified library include/ and source/.

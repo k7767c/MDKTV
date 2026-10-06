@@ -1,0 +1,14 @@
+{
+  ".url": {
+    "feiniu-karaoke.main": {
+      "title": "K歌",
+      "icon": "images/icon_{0}.png",
+      "type": "url",
+      "protocol": "",
+      "gatewayPrefix": "/app/feiniu-karaoke",
+      "gatewaySocket": "app.sock",
+      "url": "/app/feiniu-karaoke/sing",
+      "allUsers": true
+    }
+  }
+}

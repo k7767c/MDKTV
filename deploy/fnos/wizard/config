@@ -1,0 +1,14 @@
+[
+  {
+    "stepTitle": "K歌连接设置",
+    "items": [
+      {"type": "tips", "helpText": "留空保留原设置。修改后需要在应用中心重启 K歌；更换账号或密码会使原登录失效。音源账号请在应用内管理。"},
+      {"type": "text", "field": "wizard_username", "label": "新的 K歌服务账号（可选）"},
+      {"type": "password", "field": "wizard_password", "label": "新的 K歌服务密码（可选，至少 10 位）"},
+      {"type": "text", "field": "wizard_port", "label": "新的电视 / PC 端口（可选）"},
+      {"type": "text", "field": "wizard_video_root", "label": "已授权的本地视频目录（可选）"},
+      {"type": "text", "field": "wizard_import_dir", "label": "旧版私人迁移目录（可选，仅新空曲库）"},
+      {"type": "tips", "helpText": "仅迁移时请将上方新账号、密码和端口留空。旧导出不会覆盖当前 K歌管理账号、会话和网络配置，NAS 入口仍使用现有 NAS 登录；恢复旧音源授权、曲库、队列、历史和允许的评分缓存。迁移会停止应用并备份当前数据，原服务与导出保留；已有曲库或使用记录时拒绝覆盖。完成后重新启动应用，旧音源授权失效时需在应用内重新登录。"}
+    ]
+  }
+]
