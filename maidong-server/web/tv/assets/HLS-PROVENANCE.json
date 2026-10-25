@@ -1,0 +1,8 @@
+{
+  "name": "hls.js",
+  "version": "1.5.13",
+  "upstream": "https://github.com/video-dev/hls.js",
+  "registryTarball": "https://registry.npmjs.org/hls.js/-/hls.js-1.5.13.tgz",
+  "sha256": "e5753b10fc65eae35f21883e684d22c43ce66de968d35166792585b9b8a3f1a2",
+  "matchesOfficialDist": true
+}

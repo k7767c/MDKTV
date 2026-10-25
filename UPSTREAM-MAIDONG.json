@@ -1,0 +1,217 @@
+{
+  "repository": "https://github.com/Mrtangji/maidong-ktv",
+  "commit": "3c7b4c8537494d235616ebd07e642c3804b6514e",
+  "licenseFilePresent": false,
+  "files": [
+    {
+      "sourcePath": ".github/workflows/docker-publish.yml",
+      "destinationPath": "maidong-server/upstream/docker-publish.yml",
+      "sha256": "ea103a094cf4ac0c02781cab96c3de4f8c919ca8a80acc90b8e69b78a498b4a5"
+    },
+    {
+      "sourcePath": ".gitignore",
+      "destinationPath": "maidong-server/.gitignore",
+      "sha256": "a92f35b2f7ba8b5159304e64d116d999cafcdea6d2a8d50e4996386c1f1c24ba"
+    },
+    {
+      "sourcePath": "Dockerfile",
+      "destinationPath": "maidong-server/Dockerfile",
+      "sha256": "d38abca06fb118778584159174c444ecea90bce79298ddc4b530c4c98b4e8462"
+    },
+    {
+      "sourcePath": "README.md",
+      "destinationPath": "maidong-server/README.md",
+      "sha256": "e16b1b87f341336f57d902d6d70bb59f4f0a8734a9315d1d6a3cc364bf889874"
+    },
+    {
+      "sourcePath": "android-tv/app/build.gradle.kts",
+      "destinationPath": "android-tv/app/build.gradle.kts",
+      "sha256": "3ba748bacc65d0a237051edecf4a288268d162ab551c11d00e1895ac71619e32"
+    },
+    {
+      "sourcePath": "android-tv/app/src/main/AndroidManifest.xml",
+      "destinationPath": "android-tv/app/src/main/AndroidManifest.xml",
+      "sha256": "2f715459d5855ad341829e2030b9137b76ba2484b79efb4abf2e41c818088529"
+    },
+    {
+      "sourcePath": "android-tv/app/src/main/java/com/maidong/ktv/tv/MainActivity.kt",
+      "destinationPath": "android-tv/app/src/main/java/com/maidong/ktv/tv/MainActivity.kt",
+      "sha256": "ffd3fab2f1963deb715e7aa281c040feadd6a8dd303f9f46b97f4c22a26d41b1"
+    },
+    {
+      "sourcePath": "android-tv/app/src/main/res/drawable/app_banner.xml",
+      "destinationPath": "android-tv/app/src/main/res/drawable/app_banner.xml",
+      "sha256": "8bd1a60ef2e4a683b799861448447daddb4adc25bdbcc17591809f4e8168e148"
+    },
+    {
+      "sourcePath": "android-tv/app/src/main/res/drawable/bg_placeholder.xml",
+      "destinationPath": "android-tv/app/src/main/res/drawable/bg_placeholder.xml",
+      "sha256": "35367577d05fe8bf26d7a4beba10c6e40d3c280013a2cc36bd645f1bf19b0cfd"
+    },
+    {
+      "sourcePath": "android-tv/app/src/main/res/drawable/ic_launcher.xml",
+      "destinationPath": "android-tv/app/src/main/res/drawable/ic_launcher.xml",
+      "sha256": "471cc2a2057efdb256eff4e23a0f52402b42a597e8ff1637d38b53903d0f5a99"
+    },
+    {
+      "sourcePath": "android-tv/app/src/main/res/values/colors.xml",
+      "destinationPath": "android-tv/app/src/main/res/values/colors.xml",
+      "sha256": "0831c46d0d1992db7c2c2c0d8583410981df311fe3b2300c9a3404455f5a59b1"
+    },
+    {
+      "sourcePath": "android-tv/app/src/main/res/values/strings.xml",
+      "destinationPath": "android-tv/app/src/main/res/values/strings.xml",
+      "sha256": "48f9a484c890ad86aa7a9c52d90b8eed0927b2e52080764898d904aeaa836219"
+    },
+    {
+      "sourcePath": "android-tv/app/src/main/res/values/themes.xml",
+      "destinationPath": "android-tv/app/src/main/res/values/themes.xml",
+      "sha256": "6a857481c3fd35182b86cc9a01baafbab28e99119411e62fa24dc591524d0192"
+    },
+    {
+      "sourcePath": "android-tv/build.gradle.kts",
+      "destinationPath": "android-tv/build.gradle.kts",
+      "sha256": "27e4cd9e977c575e86c8ddd8d59ef33fa2aa3452692f95b61eab24c6de1a163c"
+    },
+    {
+      "sourcePath": "android-tv/gradle.properties",
+      "destinationPath": "android-tv/gradle.properties",
+      "sha256": "fa078c27c9e4bde28a029d673875b028884505efa436b68cf60e1ac0be5b679b"
+    },
+    {
+      "sourcePath": "android-tv/settings.gradle.kts",
+      "destinationPath": "android-tv/settings.gradle.kts",
+      "sha256": "9c1058c71ca5b3ff08a3c3ac4552f8ddefc42d5f63ae72d6bb27b7951b0b3a69"
+    },
+    {
+      "sourcePath": "docker-compose.nas.yml",
+      "destinationPath": "maidong-server/docker-compose.nas.yml",
+      "sha256": "072fe78141cacf73d5373a28a847d273867c1100c979eab180e41b5864b01081"
+    },
+    {
+      "sourcePath": "docker-compose.yml",
+      "destinationPath": "maidong-server/docker-compose.yml",
+      "sha256": "1c4be23232de1d679de11de0e6678b089d73e886db53a6f030b439ab65152a41"
+    },
+    {
+      "sourcePath": "docs/NAS部署指南.md",
+      "destinationPath": "maidong-server/docs/NAS部署指南.md",
+      "sha256": "e9112e21476f3fe184a9d309b1cb3a054c7016ef75be1bf2bbff4c7d4431ee55"
+    },
+    {
+      "sourcePath": "server.js",
+      "destinationPath": "maidong-server/server.js",
+      "sha256": "7b024cf24937c2e58c46132b4c4cf4c62918e7fe6942f1398ceb02774a67a9cc"
+    },
+    {
+      "sourcePath": "src/bulk.js",
+      "destinationPath": "maidong-server/src/bulk.js",
+      "sha256": "84665af210582b2d0c333dc4612a0f841f7e8b28abbcf224925f473d5f947c33"
+    },
+    {
+      "sourcePath": "src/cache.js",
+      "destinationPath": "maidong-server/src/cache.js",
+      "sha256": "61d773e4de90f5b1553c4f892f0381230aecad3995b58b0ee1beb6fa97b2cfb1"
+    },
+    {
+      "sourcePath": "src/ets.js",
+      "destinationPath": "maidong-server/src/ets.js",
+      "sha256": "38a2b70ab3511fb2c8baefe5caf76992af0544ed9890bbc1e4d52fa3c5a57559"
+    },
+    {
+      "sourcePath": "src/hls.js",
+      "destinationPath": "maidong-server/src/hls.js",
+      "sha256": "13b8fb0916f8b1198963edff41fe54a7a90f2101014b5fbbcc36deb0d5fbded9"
+    },
+    {
+      "sourcePath": "src/kw-url.js",
+      "destinationPath": "maidong-server/src/kw-url.js",
+      "sha256": "4fb2f7e61eeefce8fa915e727c2045471fecf77d1aa071187e418e42efd2d7c9"
+    },
+    {
+      "sourcePath": "src/kw.js",
+      "destinationPath": "maidong-server/src/kw.js",
+      "sha256": "ece97c3240c2cafa7ed32835f062bbd61992660ddea31969a872440cfc0ee4fe"
+    },
+    {
+      "sourcePath": "src/lx-sandbox.js",
+      "destinationPath": "maidong-server/src/lx-sandbox.js",
+      "sha256": "041bfe67dec7fc293e69d7f364aa084281cc0ae0b893eec2057e299ec5fcb5eb"
+    },
+    {
+      "sourcePath": "src/muse-rank.js",
+      "destinationPath": "maidong-server/src/muse-rank.js",
+      "sha256": "747931be1bf2d1c6d919dc935d7b4bfafeae3c5471135372bfdcf85b2e9de026"
+    },
+    {
+      "sourcePath": "src/queue.js",
+      "destinationPath": "maidong-server/src/queue.js",
+      "sha256": "e60fc6c9f716a292a8de791d0d452d4f1943b47a25c9c6148f2b99f6116d9a7f"
+    },
+    {
+      "sourcePath": "src/vendor-ktv-api.js",
+      "destinationPath": "maidong-server/src/vendor-ktv-api.js",
+      "sha256": "0fca06246fd7cdf09ce78396ae20f6ba360ba64f4410bdeabd6283ba8459bbd8"
+    },
+    {
+      "sourcePath": "test/ts-integrity-smoke.js",
+      "destinationPath": "maidong-server/test/ts-integrity-smoke.js",
+      "sha256": "5d91b81afabec52c9f475fe459dafbe5c9fdbe01b2d297b6b7c89066868bb9dd"
+    },
+    {
+      "sourcePath": "web/m/index.html",
+      "destinationPath": "maidong-server/web/m/index.html",
+      "sha256": "190bc185fa7b7a9bbe3ffd28936d801eb67fd1e9c622df05c334f3b1660d1300"
+    },
+    {
+      "sourcePath": "web/tv/assets/hls.min.js",
+      "destinationPath": "maidong-server/web/tv/assets/hls.min.js",
+      "sha256": "e5753b10fc65eae35f21883e684d22c43ce66de968d35166792585b9b8a3f1a2"
+    },
+    {
+      "sourcePath": "web/tv/assets/home_card_category.webp",
+      "destinationPath": "maidong-server/web/tv/assets/home_card_category.webp",
+      "sha256": "9605d5b8d67bca62220468be5b99bb7c80c278ab4d670fe60971eb224d9028cb"
+    },
+    {
+      "sourcePath": "web/tv/assets/home_card_favorite.webp",
+      "destinationPath": "maidong-server/web/tv/assets/home_card_favorite.webp",
+      "sha256": "8fad105c737450a48b1aff70cb69a86737e4c86a7a4842b666904fcbd410f6aa"
+    },
+    {
+      "sourcePath": "web/tv/assets/home_card_local.webp",
+      "destinationPath": "maidong-server/web/tv/assets/home_card_local.webp",
+      "sha256": "fa16592e0ab231d6e390c88ac9a090fea0e26c303e7ccc3280615ca4f010722d"
+    },
+    {
+      "sourcePath": "web/tv/assets/home_card_rank.webp",
+      "destinationPath": "maidong-server/web/tv/assets/home_card_rank.webp",
+      "sha256": "62426a710cb5b666ca0a52634fb50ce21f7fe471b036413b79a2f4643e0119b1"
+    },
+    {
+      "sourcePath": "web/tv/assets/home_card_regular.webp",
+      "destinationPath": "maidong-server/web/tv/assets/home_card_regular.webp",
+      "sha256": "5da05ce9089b2c245c81f6815c8a858c2ea38875ddd2f4ebea22b0b6ec5a8a9a"
+    },
+    {
+      "sourcePath": "web/tv/assets/home_card_singer.webp",
+      "destinationPath": "maidong-server/web/tv/assets/home_card_singer.webp",
+      "sha256": "0a4a500a0d3c5e8fd27d6da1b454ed05f9c7d3988aa7a51ab20cd7251a4cd75d"
+    },
+    {
+      "sourcePath": "web/tv/assets/home_card_song.webp",
+      "destinationPath": "maidong-server/web/tv/assets/home_card_song.webp",
+      "sha256": "6f27c9eaf34c4b1be8572883f58718d0a3fe68c89f0d17b71626d09c0fe2b399"
+    },
+    {
+      "sourcePath": "web/tv/assets/ktv_logo.png",
+      "destinationPath": "maidong-server/web/tv/assets/ktv_logo.png",
+      "sha256": "604f322ebbaeef0f357236ba63bfa797b7db2341a5ab2b79423112003275f2af"
+    },
+    {
+      "sourcePath": "web/tv/index.html",
+      "destinationPath": "maidong-server/web/tv/index.html",
+      "sha256": "d5c976212f1dece6d10c4bdf8840a0bd9970e9bd303d6c8e1d832727f8d27e62"
+    }
+  ]
+}
