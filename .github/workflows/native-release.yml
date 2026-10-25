@@ -1,0 +1,64 @@
+name: Publish native TV release
+on:
+  push:
+    tags: ['v1.0']
+permissions:
+  contents: write
+concurrency:
+  group: native-release-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools platforms;android-35 build-tools;35.0.0'
+          log-accepted-android-sdk-licenses: false
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.7'
+      - name: Check native dependencies and rebuild source
+        run: |
+          python3 native-tv/tools/check_native_libs.py
+          gradle -p native-tv --no-daemon :app:assembleRelease :app:testDebugUnitTest
+      - name: Retrieve locally signed release package
+        uses: actions/checkout@v4
+        with:
+          ref: release-assets/1.0
+          path: release-out
+      - name: Verify package digest, source, version and signature
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          python3 - <<'CHECK'
+          import json, os, pathlib, re
+          build = pathlib.Path('native-tv/app/build.gradle').read_text()
+          version = re.search(r'versionName\s+"([^"]+)"', build).group(1)
+          assert os.environ['RELEASE_TAG'] == 'v' + version
+          source = json.loads(pathlib.Path('release-out/SOURCE.json').read_text())
+          assert source['sourceCommit'] == os.environ['GITHUB_SHA']
+          CHECK
+          (cd release-out && sha256sum -c ../native-tv/releases/1.0.sha256)
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify release-out/MDKTV-1.0.apk
+          "$ANDROID_HOME/build-tools/35.0.0/aapt2" dump badging release-out/MDKTV-1.0.apk > "$RUNNER_TEMP/mdktv-package.txt"
+          grep -q "name='org.mdktv.nativeapp' versionCode='15' versionName='1.0'" "$RUNNER_TEMP/mdktv-package.txt"
+          if grep -q 'application-debuggable' "$RUNNER_TEMP/mdktv-package.txt"; then exit 1; fi
+      - name: Publish APK and checksum
+        uses: softprops/action-gh-release@v2
+        with:
+          name: MDKTV 1.0 初始版
+          body_path: native-tv/RELEASE-1.0.md
+          draft: false
+          prerelease: false
+          make_latest: true
+          fail_on_unmatched_files: true
+          files: |
+            release-out/MDKTV-1.0.apk
+            release-out/SHA256SUMS.txt

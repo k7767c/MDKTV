@@ -55,3 +55,9 @@ python deploy/build_fpk.py --out artifacts/fnos/my-candidate --wheelhouse /path/
 ```
 
 先按工具帮助检查 Emscripten 参数；`build_web_dsp.py` 的官方 SDK 路径由 `--emsdk` 指定。本源码包没有下载依赖或执行应用生命周期。FPK 安装和生产服务操作必须通过合法权限及实际应用中心流程，测试脚本不构成安装授权。构建可按保留的源码、依赖版本和摘要追溯；外部编译器、wheel、fnpack、Git ID 和环境需另行锁定，**不承诺跨环境 FPK 或 WASM 位级一致**。
+
+## Android TV 初始版 1.0
+
+[GitHub Release](https://github.com/k7767c/MDKTV/releases/tag/v1.0) · [下载 MDKTV-1.0.apk](https://github.com/k7767c/MDKTV/releases/download/v1.0/MDKTV-1.0.apk)
+
+原生电视版，Android 5.0+、ARMv7/ARM64，使用正式发布签名。功能、来源及初始版限制见 [发布说明](native-tv/RELEASE-1.0.md)。

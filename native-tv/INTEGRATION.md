@@ -36,3 +36,9 @@ VocalScorer 按人声覆盖、音高稳定性、能量评分，没有与歌曲�
 IJK 使用上游的预编译 JAR/SO，不是从 C/C++ 源码重建。解码工程缺少两个架构的 `libijkffmpeg.so`；从 QiuYiLiang/maidong-ktv 补齐之前，已确认该分支的原 JAR 与现有五个 SO 全部逐字节一致。二进制依赖来源及摘要见 `IJK-RUNTIME-PROVENANCE.json`。运行兼容性仍需在 ARMv7/ARM64 实机验证；构建和 JVM 单测通过不等于电视播放、手机收音、HTTPS 信任或端到端评分已验收。
 
 遵守本目录 LICENSE 的免费、禁止商用和署名要求；IJK、FFmpeg 等组件适用各自许可。本仓库根目录 THIRD-PARTY-COMPONENTS.md 亦保留相关历史组件说明，不将本工程整体改为 MIT/Apache-2.0。
+
+## GitHub 1.0 发布
+
+Git 标签 `v1.0` 触发 `.github/workflows/native-release.yml`。工作流重新构建源码并运行单测，随后从独立的 `release-assets/1.0` 分支获取本地正式签名的安装包，核对源提交、固定 SHA-256、包名、版本及签名后上传 GitHub Release。
+
+APK 版本号 1.0、versionCode 15，正式应用 ID 为 `org.mdktv.nativeapp`。固定摘要见 `releases/1.0.sha256`。发布私钥没有提交到仓库，后续正式更新必须保留并使用同一密钥；此流程不自动生成替换密钥。调试版仍带 `.qa` 后缀。
