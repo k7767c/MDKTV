@@ -6,6 +6,7 @@ plugins {
 android {
     namespace = "com.maidong.ktv.tv"
     compileSdk = 35
+    buildToolsVersion = "35.0.0"
 
     defaultConfig {
         applicationId = "com.maidong.ktv.tv"
