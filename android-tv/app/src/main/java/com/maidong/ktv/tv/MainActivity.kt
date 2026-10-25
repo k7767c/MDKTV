@@ -134,6 +134,7 @@ class MainActivity : AppCompatActivity() {
 
         if (checkBeforeLoad) {
             checkServerAsync(normalized) { ok ->
+                if (isFinishing || generation != setupGeneration) return@checkServerAsync
                 if (ok) {
                     prefs.edit().putString(KEY_SERVER_URL, normalized).apply()
                     runOnUiThread { open() }

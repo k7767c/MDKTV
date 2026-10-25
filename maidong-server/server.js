@@ -7,7 +7,7 @@
  * 音源：内置酷我搜索/歌词/榜单 + LX 沙箱脚本解析 musicUrl
  * 曲库：全量缓存到 NAS 卷 /music，索引在 /data
  *
- * 零 npm 依赖，Node >= 18 即可运行。
+ * 零 npm 依赖，Node >= 22.13（需要内置 node:sqlite）。
  */
 
 const http = require('http');
