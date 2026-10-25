@@ -1,0 +1,97 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- ===== 网络与存储权限 ===== -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <!-- ===== 音频与录音权限 ===== -->
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+    <!-- ===== 蓝牙（v1.2.8 移除）=====
+         老板真车验证蓝牙麦（HFP/SCO 手机当麦）"行不通"，2026-10-12 拍板砍掉：
+         BluetoothMicManager.kt / 首页入口 / 工具中心入口 / 弹窗全部拆除，
+         BLUETOOTH / BLUETOOTH_ADMIN / BLUETOOTH_CONNECT / BLUETOOTH_SCO 权限声明同步移除。
+         人声进车机的正路 = 手机话筒（HTTPS 网页 PCM）+ 有线麦（MicActivator 占位）。
+         如未来重启蓝牙方案，去 git 历史恢复上述四项权限与 BluetoothMicManager.kt。 -->
+
+    <!-- ===== 系统与设备管理权限 ===== -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+
+    <!-- ===== 硬件特性声明 ===== -->
+    <!-- TV 特性:非必需,允许手机和 TV 都可安装 -->
+    <uses-feature android:name="android.software.leanback" android:required="false" />
+    <!-- 支持非触摸设备(如红外遥控操作的 TV 盒子) -->
+    <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
+    <!-- 麦克风:用于录音评分功能,非必需(无麦克风设备也可播放) -->
+    <uses-feature android:name="android.hardware.microphone" android:required="false" />
+    <!-- USB Host:用于读取 U 盘歌曲文件,非必需 -->
+    <uses-feature android:name="android.hardware.usb.host" android:required="false" />
+
+    <!-- ===== 屏幕适配声明 ===== -->
+    <!-- 支持 TV 大屏与常规手机屏,不限制密度 -->
+    <supports-screens
+        android:smallScreens="true"
+        android:normalScreens="true"
+        android:largeScreens="true"
+        android:xlargeScreens="true"
+        android:resizeable="true"
+        android:anyDensity="true" />
+
+    <!-- ⚠️ 不要加回 android:largeHeap="true"（2026-10-12 车机实测后移除）：
+         车机（哪吒L/8155）内存紧张，largeHeap 会把 Dalvik 上限从默认
+         （约192-256MB）抬到 512MB。我们稳态占用远低于默认值（歌曲分页、
+         头像 LRU、浏览缓存全都有界），放大上限只会加重系统 LMK 压力，
+         连累车机其它服务。要调大缓存先看 KtvLog 的内存记录。 -->
+
+    <application
+        android:name=".KtvApplication"
+        android:allowBackup="true"
+        android:banner="@drawable/banner"
+        android:hardwareAccelerated="true"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:requestLegacyExternalStorage="true"
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+        <activity
+            android:name=".MainActivity"
+            android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenSize"
+            android:exported="true"
+            android:launchMode="singleInstance"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="stateHidden">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- 开机自启动接收器:设备启动完成后自动进入 KTV 主界面 -->
+        <receiver
+            android:name=".BootReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+    </application>
+</manifest>
