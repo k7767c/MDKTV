@@ -1,0 +1,9 @@
+{
+  "repository": "https://github.com/k7767c/MDKTV",
+  "sourceCommit": "a7ad7ac98765135828c6093511b9ef45b06b8f2f",
+  "tag": "v1.0.1",
+  "versionName": "1.0.1",
+  "versionCode": 16,
+  "buildType": "release",
+  "applicationId": "org.mdktv.nativeapp"
+}
