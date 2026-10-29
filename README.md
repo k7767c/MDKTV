@@ -61,3 +61,5 @@ python deploy/build_fpk.py --out artifacts/fnos/my-candidate --wheelhouse /path/
 [GitHub Release](https://github.com/k7767c/MDKTV/releases/tag/v1.0) · [下载 MDKTV-1.0.apk](https://github.com/k7767c/MDKTV/releases/download/v1.0/MDKTV-1.0.apk)
 
 原生电视版，Android 5.0+、ARMv7/ARM64，使用正式发布签名。功能、来源及初始版限制见 [发布说明](native-tv/RELEASE-1.0.md)。
+
+低存储修复版：[1.0.1 发布说明](native-tv/RELEASE-1.0.1.md)。首次启动不再强制下载完整曲库数据库，可使用本地/U盘或自行配置网络曲库。

@@ -739,47 +739,71 @@ val downloads: MutableList<DownloadTask> = java.util.concurrent.CopyOnWriteArray
         main.postDelayed({ checkAppUpdate(false) }, 2500L)
     }
 
-    private fun initializeDatabase() {
+    private fun initializeDatabase(downloadRequested: Boolean = false) {
         if (databaseBootstrapRunning) return
         databaseBootstrapRunning = true
-        showDatabaseLoading(true, "正在初始化曲库...", null)
+        showDatabaseLoading(true, "正在检查本地曲库…", null)
         io.execute {
-            val remoteVersion = DatabaseBootstrapper.fetchRemoteVersion()
-            val localVersion = DatabaseBootstrapper.getLocalDbVersion()
-            val updateRequired = remoteVersion != null && remoteVersion != localVersion
-            var bootstrapError: Throwable? = null
-            var usedOldDatabase = false
-
-            var ok = if (updateRequired) false else library.muse.open()
-            if (!ok) {
-                library.muse.close()
-                val result = DatabaseBootstrapper.download(::showDatabaseDownloadProgress)
-                bootstrapError = result.exceptionOrNull()
-                ok = result.isSuccess && library.muse.open()
-                if (!ok) {
-                    // A failed online update must not make an existing local catalog unusable.
-                    usedOldDatabase = library.muse.open()
-                    ok = usedOldDatabase
-                }
-            }
-
-            val count = if (ok) library.muse.songCount() else 0
-            if (ok) warmRemoteBrowseCache(count)
+            val result = CatalogStartup.open(
+                downloadRequested = downloadRequested,
+                openLocal = { library.muse.open() },
+                download = {
+                    library.muse.close()
+                    DatabaseBootstrapper.download(::showDatabaseDownloadProgress).map { Unit }
+                },
+            )
+            if (result.available) warmRemoteBrowseCache(library.muse.songCount())
             main.post {
+                if (isFinishing || isDestroyed) return@post
                 databaseBootstrapRunning = false
-                if (ok) {
-                    refreshLibrary {
-                        showDatabaseLoading(false, "", null)
-                        showHomePage()
-                        if (usedOldDatabase && bootstrapError != null) toast("曲库更新失败，已使用本地曲库")
-                        if (catalogRefreshPending) refreshCurrentCatalogPage()
+                refreshLibrary {
+                    showDatabaseLoading(false, "", null)
+                    showHomePage()
+                    if (result.error != null) {
+                        showOptionalCatalogFailure(result.error.message.orEmpty())
+                    } else if (!result.available && !downloadRequested) {
+                        if (prefs()?.getBoolean("catalog_setup_shown", false) != true) {
+                            prefs()?.edit()?.putBoolean("catalog_setup_shown", true)?.apply()
+                            showCatalogSetupOptions()
+                        }
                     }
-                } else {
-                    val reason = bootstrapError?.message.orEmpty().ifBlank { "未找到可用曲库" }
-                    showDatabaseLoadingFailure("曲库初始化失败：$reason")
+                    if (catalogRefreshPending) refreshCurrentCatalogPage()
                 }
             }
         }
+    }
+
+    private fun showCatalogSetupOptions() {
+        AlertDialog.Builder(this)
+            .setTitle("选择曲库方式（无需下载完整曲库即可进入）")
+            .setItems(arrayOf("本地 / U盘歌曲，不下载完整曲库", "配置 NAS / 网络曲库地址", "下载完整曲库数据库（需要较多空间）")) { _, which ->
+                when (which) {
+                    0 -> showLocalPage()
+                    1 -> showCatalogDialog()
+                    2 -> confirmFullCatalogDownload()
+                }
+            }
+            .setNegativeButton("稍后设置", null)
+            .create().showForTv()
+    }
+
+    private fun confirmFullCatalogDownload() {
+        AlertDialog.Builder(this)
+            .setTitle("下载完整曲库数据库？")
+            .setMessage("这是歌曲目录数据库，不是歌曲视频。下载和解压可能需要超过 2GB 存储空间。\n空间不足时，可以继续使用本地、U盘或自己的网络曲库，无需下载完整数据库。")
+            .setPositiveButton("确认下载") { _, _ -> initializeDatabase(downloadRequested = true) }
+            .setNegativeButton("取消", null)
+            .create().showForTv()
+    }
+
+    private fun showOptionalCatalogFailure(message: String) {
+        AlertDialog.Builder(this)
+            .setTitle("完整曲库未安装，可继续使用应用")
+            .setMessage(message)
+            .setPositiveButton("选择其他曲库方式") { _, _ -> showCatalogSetupOptions() }
+            .setNeutralButton("重试下载") { _, _ -> confirmFullCatalogDownload() }
+            .setNegativeButton("继续使用", null)
+            .create().showForTv()
     }
 
     private fun showDatabaseDownloadProgress(value: Int, detail: String?) {
@@ -5632,6 +5656,13 @@ val downloads: MutableList<DownloadTask> = java.util.concurrent.CopyOnWriteArray
 
             if (song.hasLocalFile()) {
                 playLocalFile(song)
+            } else if (CatalogPlayback.directStreamUrl(song.remote, song.videoUrl) != null) {
+                playbackPreparing = true
+                hideDownloadProgress()
+                player!!.stopPlayback()
+                setupPlayerListeners(song, 0, playbackGeneration)
+                player!!.setVideoURI(Uri.parse(CatalogPlayback.directStreamUrl(song.remote, song.videoUrl)!!))
+                if (playWhenPrepared) player!!.start()
             } else {
                 playbackPreparing = true
                 // 统一使用支持断点续传和下载地址重试的下载管理器。
@@ -5899,6 +5930,9 @@ val downloads: MutableList<DownloadTask> = java.util.concurrent.CopyOnWriteArray
                 }, 700L * retry)
             } else {
                 songRetryCount = 0
+                if (song != null && CatalogPlayback.directStreamUrl(song.remote, song.videoUrl) != null) {
+                    toast("网络播放失败，请检查曲库地址或网络连接；未自动下载歌曲")
+                }
                 main.post(Runnable { this.playNext() })
             }
             true
@@ -6910,7 +6944,7 @@ val downloads: MutableList<DownloadTask> = java.util.concurrent.CopyOnWriteArray
                 main.post(Runnable {
                     busy(false, "网络曲库已同步：" + array.length() + " 首")
                     if (currentTabIndex == 6) loadDownloadedList()
-                    else showSongs("网络")
+                    else showNetworkCatalogPage()
                 })
             } catch (e: Exception) {
                 main.post(Runnable { busy(false, "网络曲库同步失败：" + e.message) })
@@ -6933,6 +6967,25 @@ val downloads: MutableList<DownloadTask> = java.util.concurrent.CopyOnWriteArray
         })
     }
 
+    private fun showNetworkCatalogPage() {
+        currentTabIndex = -1
+        showSubPageShell("主页 / 网络曲库")
+        setupTabs()
+        browseMode = "direct_catalog"
+        browsePage = 0
+        currentCategories.clear()
+        currentCategoryIndex = -1
+        updateCategories()
+        keyboardArea?.visibility = View.GONE
+        paginationBar?.visibility = View.GONE
+        browsePagination?.visibility = View.GONE
+        listTitle?.text = "网络曲库 · 在线播放"
+        visibleSongs.clear()
+        visibleSongs.addAll(library.allSongs().filter { it.remote && isVisibleSong(it) })
+        renderSongList()
+        if (visibleSongs.isEmpty()) toast("尚未配置网络歌曲，可在设置中的曲库方式填写自己的曲库地址")
+    }
+
     private fun showCatalogDialog() {
         val input = EditText(this)
         input.setSingleLine(true)
@@ -6940,7 +6993,7 @@ val downloads: MutableList<DownloadTask> = java.util.concurrent.CopyOnWriteArray
         input.setHint("http://你的服务器/catalog.json")
         AlertDialog.Builder(this)
             .setTitle("网络曲库源")
-            .setMessage("JSON: [{\"title\":\"歌名\",\"singer\":\"歌手\",\"category\":\"分类\",\"url\":\"http://.../song.mp4\"}]")
+            .setMessage("填写自己的 NAS / 媒体服务器曲库 JSON 地址。只同步歌曲目录，点播 HTTP(S) 媒体时在线播放，不先下载整首歌曲。\nJSON: [{\"title\":\"歌名\",\"singer\":\"歌手\",\"url\":\"http://.../song.mp4\"}]")
             .setView(input)
             .setPositiveButton(
                 "保存并同步",
@@ -7981,6 +8034,11 @@ val downloads: MutableList<DownloadTask> = java.util.concurrent.CopyOnWriteArray
 
     /** 顶栏搜索按钮 - 跳到搜索页  */
     private fun showSearchPage() {
+        if (!library.muse.isAvailable()) {
+            if (library.allSongs().any { it.remote }) showNetworkCatalogPage()
+            else showCatalogSetupOptions()
+            return
+        }
         searchScope = "song"
         activeSearchQuery = ""
         setSearchText("")
@@ -8607,8 +8665,9 @@ val downloads: MutableList<DownloadTask> = java.util.concurrent.CopyOnWriteArray
         currentCategoryIndex = 0
         updateCategories()
         if (!library.muse.isAvailable()) {
-            catalogRefreshPending = true
-            busy(true, "曲库加载中...")
+            catalogRefreshPending = false
+            busy(false, "此页面需要完整曲库，可选择本地或网络曲库")
+            showCatalogSetupOptions()
             return
         }
         io.execute {
@@ -8882,8 +8941,9 @@ val downloads: MutableList<DownloadTask> = java.util.concurrent.CopyOnWriteArray
         browseMode = "singer_list"
         browseParam = type
         if (!library.muse.isAvailable()) {
-            catalogRefreshPending = true
-            busy(true, "曲库加载中...")
+            catalogRefreshPending = false
+            busy(false, "此页面需要完整曲库，可选择本地或网络曲库")
+            showCatalogSetupOptions()
             return
         }
         val requestVersion = ++browseRequestVersion
@@ -9097,11 +9157,7 @@ val downloads: MutableList<DownloadTask> = java.util.concurrent.CopyOnWriteArray
         browseParam = ""
         browsePage = 0
         visibleSongs.clear()
-        if (!library.muse.isAvailable()) {
-            catalogRefreshPending = true
-            busy(true, "曲库加载中...")
-            return
-        }
+
         // 从数据库查询收藏歌曲
         io.execute(Runnable {
             val result: MutableList<Song> = ArrayList<Song>()
@@ -9137,6 +9193,7 @@ val downloads: MutableList<DownloadTask> = java.util.concurrent.CopyOnWriteArray
         browsePagination?.visibility = View.GONE
 
         val entries = listOf(
+            SettingsEntry(R.drawable.ott_ic_data_setting, "曲库方式", "本地 / U盘 / 自有网络曲库，完整数据库按需下载", "选择") { showCatalogSetupOptions() },
             SettingsEntry(R.drawable.ott_ic_data_setting, "数据设置", "数据库、歌曲下载、歌曲文件相关设置") { showSettingsSection(1) },
             SettingsEntry(R.drawable.ott_ic_play, "播放设置", "播放器、视频窗口相关设置") { showSettingsSection(2) },
             SettingsEntry(R.drawable.ott_ic_sound, "声音设置") { showSoundSettingsDialog() },
@@ -9467,15 +9524,9 @@ val downloads: MutableList<DownloadTask> = java.util.concurrent.CopyOnWriteArray
     }
 
     private fun showDatabaseLoadingFailure(message: String) {
-        showDatabaseLoading(true, "$message\n请检查网络或空间后重试", null)
-        databaseRetryButton?.apply {
-            visibility = View.VISIBLE
-            setOnClickListener {
-                isEnabled = false
-                initializeDatabase()
-            }
-            requestFocus()
-        }
+        showDatabaseLoading(false, "", null)
+        showHomePage()
+        showOptionalCatalogFailure(message)
     }
 
     // ===== 设置子功能 (新Tab版) =====
@@ -9945,8 +9996,9 @@ val downloads: MutableList<DownloadTask> = java.util.concurrent.CopyOnWriteArray
      */
     private fun loadBrowsePage() {
         if (!library.muse.isAvailable()) {
-            catalogRefreshPending = true
-            busy(true, "曲库加载中...")
+            catalogRefreshPending = false
+            busy(false, "此页面需要完整曲库，可选择本地或网络曲库")
+            showCatalogSetupOptions()
             return
         }
         catalogRefreshPending = false
@@ -10599,7 +10651,8 @@ private val localFileFlagCache = HashMap<String, Boolean>()
     }
 
     private fun isSongReadyForQueue(song: Song): Boolean =
-        SongOkDownloadManager.isDownloaded(song) || song.hasLocalFile()
+        CatalogPlayback.directStreamUrl(song.remote, song.videoUrl) != null ||
+            SongOkDownloadManager.isDownloaded(song) || song.hasLocalFile()
 
     private fun addReadySongToQueue(song: Song) {
         if (orderQueue!!.contains(song)) return
