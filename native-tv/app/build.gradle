@@ -1,0 +1,85 @@
+plugins {
+    id "com.android.application"
+    id "org.jetbrains.kotlin.android"
+}
+
+android {
+    namespace "com.fenghuolun.ktv"
+    compileSdk 35
+    buildToolsVersion "35.0.0"
+
+    defaultConfig {
+        applicationId "org.mdktv.nativeapp"
+        minSdk 21
+        targetSdk 25
+        versionCode 16
+        versionName "1.0.1"
+        ndk {
+            // Package each ABI's complete IJK set; never mix individual SOs across the two sets.
+            abiFilters "armeabi-v7a", "arm64-v8a"
+        }
+        def manifestUrl = project.findProperty("GITEE_DATABASE_MANIFEST_URL") ?: ""
+        buildConfigField "String", "GITEE_DATABASE_MANIFEST_URL", "\"${manifestUrl}\""
+        def giteeToken = project.findProperty("GITEE_DATABASE_TOKEN") ?: ""
+        buildConfigField "String", "GITEE_DATABASE_TOKEN", "\"${giteeToken}\""
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            debuggable true
+            applicationIdSuffix ".qa"
+        }
+    }
+
+    // 支持 .ts 视频文件(aapt 不压缩这些文件以避免 SoundPool/MediaPlayer 问题)
+    androidResources {
+        noCompress 'ts', 'mp3', 'mp4', 'aac', 'm4a', 'flac', 'wav'
+    }
+
+    // 关闭发布构建的 lint vital 检查(本地分发的 APK 不需要 Google Play 上架要求)
+    lint {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
+    // 启用 BuildConfig 生成,供 AboutFragment 读取版本号/版本Code等信息
+    buildFeatures {
+        buildConfig = true
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+
+}
+
+// 强制统一 Kotlin 标准库版本,避免 appcompat 与其他依赖的版本冲突
+configurations.all {
+    resolutionStrategy {
+        force "org.jetbrains.kotlin:kotlin-stdlib:1.8.22"
+        force "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22"
+        force "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22"
+        force "org.jetbrains.kotlin:kotlin-stdlib-common:1.8.22"
+    }
+}
+
+dependencies {
+    implementation files('libs/original-ijk-runtime.jar')
+    implementation "androidx.core:core:1.12.0"
+    implementation "androidx.appcompat:appcompat:1.6.1"
+    implementation "com.google.zxing:core:3.5.3"
+    implementation "com.liulishuo.okdownload:okdownload:1.0.7"
+    testImplementation "junit:junit:4.13.2"
+
+}

@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#17052f">
+  <title>风火轮 KTV 手机点歌</title>
+  <link rel="stylesheet" href="/mobile/app.css">
+  <link rel="stylesheet" href="/mobile/logo.css">
+</head>
+<body>
+  <div class="aurora aurora-one"></div><div class="aurora aurora-two"></div><div class="mesh"></div>
+  <div id="offline" class="offline hidden"><span></span>连接中断，正在重新连接…</div>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark"><img src="/res/drawable-nodpi/ktv_logo.png" alt="风火轮 KTV"></div>
+        <div><h1>风火轮 <em>KTV</em></h1><p id="connection"><span></span>正在连接风火轮 KTV…</p></div>
+      </div>
+      <button id="queueBadge" class="queue-badge" data-page="remote"><b>0</b><span>已点在遥控页</span></button>
+    </header>
+
+    <main>
+      <section id="remote" class="page active">
+        <article class="hero-card">
+          <div class="hero-glow"></div><div class="album"><div class="disc"><span>♪</span></div></div>
+          <div class="hero-copy"><div class="eyebrow"><span class="playing-dot"></span>正在播放</div><h2 id="nowTitle">暂无歌曲</h2><p id="nowSinger">请先点一首喜欢的歌</p><div class="sound-wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+        </article>
+
+        <div class="controls">
+          <button data-action="replay"><span class="control-icon">↻</span><span>重唱</span></button>
+          <button id="playButton" class="primary" data-action="pause"><span class="control-icon">Ⅱ</span><span>暂停</span></button>
+          <button data-action="next"><span class="control-icon">›|</span><span>切歌</span></button>
+        </div>
+
+        <article class="glass-card audio-panel">
+          <div class="panel-title"><div><span class="tiny-icon">♪</span><b>声音控制</b></div><small>即时生效</small></div>
+          <div class="seg"><button id="accompany" data-vocal="accompany"><span>伴</span>伴唱</button><button id="original" data-vocal="original"><span>原</span>原唱</button></div>
+          <label><span><i class="volume-icon">♪</i>音乐音量</span><b><em id="musicValue">70</em>%</b><input id="musicVolume" type="range" min="0" max="100" value="70"></label>
+          <label><span><i class="volume-icon mic">●</i>麦克风音量</span><b><em id="micValue">70</em>%</b><input id="micVolume" type="range" min="0" max="100" value="70"></label>
+        </article>
+
+        <article class="next-card"><div class="next-number">02</div><div><small>下一首</small><b id="nextSong">队列为空</b></div><span id="queueCountInline">0 首已点</span></article>
+
+        <article class="glass-card queue-inline">
+          <div class="panel-title"><div><span class="tiny-icon">♪</span><b>已点歌单</b></div><small>置顶排在当前歌之后</small></div>
+          <div id="queueListInline" class="list"></div>
+        </article>
+      </section>
+
+      <section id="search" class="page">
+        <div class="page-heading"><div><p>SONG LIBRARY</p><h2>想唱什么？</h2></div><span>海量本地曲库</span></div>
+        <div class="search-mode" role="group" aria-label="搜索方式">
+          <button type="button" data-search-mode="song" class="active">歌曲</button>
+          <button type="button" data-search-mode="singer">歌手</button>
+        </div>
+        <form id="searchForm" class="search-box"><span class="search-icon"></span><input id="query" autocomplete="off" placeholder="输入歌曲名或拼音"><button type="submit">搜索</button></form>
+        <div id="searchResultBlock" class="search-result-block hidden">
+          <div class="block-title"><h3 id="resultTitle">歌手搜索结果</h3><span id="resultSummary"></span></div>
+          <div id="results" class="list"></div><button id="more" class="more hidden">加载更多歌曲</button>
+        </div>
+        <div id="hot" class="hot-block">
+          <div class="block-title"><h3>热歌排行</h3><span id="hotSummary">正在加载…</span></div>
+          <div id="hotList" class="list ranking-list"></div>
+          <div class="rank-pager"><button id="hotPrev" type="button">上一页</button><b id="hotPage">第 1 页</b><button id="hotNext" type="button">下一页</button></div>
+        </div>
+      </section>
+
+      <section id="mic" class="page">
+        <div class="page-heading"><div><p>KARAOKE MIC</p><h2>手机当话筒</h2></div><span>仅安卓手机</span></div>
+        <article class="glass-card mic-card">
+          <button id="micToggle" class="mic-toggle"><span class="mic-icon">🎤</span><b id="micToggleText">开启话筒</b></button>
+          <p class="mic-desc">把这个手机当麦克风，唱出来的声音从车机喇叭出来。唱完记得关闭。</p>
+          <div class="mic-meter"><i id="micLevelBar"></i></div>
+          <div class="mic-rows">
+            <div><span>状态</span><b id="micState">未开启</b></div>
+            <div><span>输入电平</span><b id="micLevel">—</b></div>
+            <div><span>发送速率</span><b id="micRate">—</b></div>
+            <div><span>啸叫保护</span><b id="micHowl">正常</b></div>
+          </div>
+          <label class="mic-vol"><span>人声音量</span><b><em id="phoneMicValue">70</em>%</b><input id="phoneMicVolume" type="range" min="0" max="100" value="70"></label>
+        </article>
+
+        <article class="glass-card queue-inline">
+          <div class="panel-title"><div><span class="tiny-icon">♪</span><b>已点歌单</b></div><small id="queueCountInline2">0 首</small></div>
+          <div id="queueListInline2" class="list"></div>
+        </article>
+      </section>
+    </main>
+
+    <nav><button data-page="remote" class="active"><i class="nav-remote"></i><span>遥控</span><b id="navCount" class="hidden">0</b></button><button data-page="search"><i class="nav-search"></i><span>搜歌</span></button><button data-page="mic"><i class="nav-mic"></i><span>话筒</span></button></nav>
+  </div>
+  <div id="toast"></div>
+  <script src="/mobile/app.js"></script>
+</body>
+</html>

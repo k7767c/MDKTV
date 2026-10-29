@@ -18,6 +18,14 @@ K歌由 FXD 维护，基于 **麦动（Maidong KTV）** 修改。**原作者：�
 
 ## 文件范围
 
+新增原生 Android TV 工程位于 [`native-tv/`](native-tv/INTEGRATION.md)，从 `jimi10000/maidong-ktv` 严格 Base64 解码后集成，包含已接入主界面的手机话筒、AudioTrack 输出、基础演唱评分与 IJK 播放器。它单独构建 APK，尚未适配现有 NAS 后端的曲库和队列；来源、构建及限制见其集成说明。
+
+从 [Mrtangji/maidong-ktv](https://github.com/Mrtangji/maidong-ktv) 提取的 Android TV 工程位于 `android-tv/`，对应 Node 服务端、TV/手机页面、共享队列、缓存和 Docker 配置位于 `maidong-server/`。两套服务 API 不同，请按 [提取及使用说明](IMPORT-MAIDONG.md) 配对部署。来源摘要保存在 `UPSTREAM-MAIDONG.json`，GitHub Actions 可构建两个 TV APK。
+
+新增初始 Android TV 客户端位于 `tv/`，连接已部署的 NAS 服务；安装、构建及验收边界见 [tv/README.md](tv/README.md)。它是独立新增的 WebView 工程，不代表下述初始 NAS 快照包含原 Android 应用。
+
+以下为初始 NAS 快照的文件范围（新增 Android 工程见上方说明）：
+
 `bridge/` 包含实际 NAS 服务、独立演唱网页、原始资源、缩略图、浏览器 vendor 和回归测试。`deploy/fnos/` 是公开的包模板及生命周期代码，**不是任何已安装用户的配置**；`deploy/build_fpk.py`、导出及缩略图工具和 fnOS 测试用于构建、验证与迁移。`tools/web_dsp*`、`tools/build_web_dsp.py` 及 `app/src/main/cpp/` 的选定音效代码保留编译依赖；这里只保留共享 C++ 算法与第三方库，没有 Android 应用、JNI 外壳或 APK 工程。`pc/assets/logo.png` 只用于包图标。
 
 不包含账户、Cookie、Token、授权码、配置实例、数据库、歌曲、历史备份、浏览器资料、模型、依赖环境、离线 wheel、FPK、编译 WASM 或可执行文件。测试里的账号、凭据和 IP 都是本地合成 fixture，不能连接真实服务；扫描说明见 `SOURCE-SNAPSHOT.json`。
@@ -47,3 +55,11 @@ python deploy/build_fpk.py --out artifacts/fnos/my-candidate --wheelhouse /path/
 ```
 
 先按工具帮助检查 Emscripten 参数；`build_web_dsp.py` 的官方 SDK 路径由 `--emsdk` 指定。本源码包没有下载依赖或执行应用生命周期。FPK 安装和生产服务操作必须通过合法权限及实际应用中心流程，测试脚本不构成安装授权。构建可按保留的源码、依赖版本和摘要追溯；外部编译器、wheel、fnpack、Git ID 和环境需另行锁定，**不承诺跨环境 FPK 或 WASM 位级一致**。
+
+## Android TV 初始版 1.0
+
+[GitHub Release](https://github.com/k7767c/MDKTV/releases/tag/v1.0) · [下载 MDKTV-1.0.apk](https://github.com/k7767c/MDKTV/releases/download/v1.0/MDKTV-1.0.apk)
+
+原生电视版，Android 5.0+、ARMv7/ARM64，使用正式发布签名。功能、来源及初始版限制见 [发布说明](native-tv/RELEASE-1.0.md)。
+
+低存储修复版：[1.0.1 发布说明](native-tv/RELEASE-1.0.1.md)。首次启动不再强制下载完整曲库数据库，可使用本地/U盘或自行配置网络曲库。

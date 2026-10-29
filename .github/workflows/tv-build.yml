@@ -1,0 +1,71 @@
+name: Build TV APK and check imported server
+on:
+  workflow_dispatch:
+  push:
+    paths: ['android-tv/**', 'native-tv/**', 'tv/**', 'maidong-server/**', '.github/workflows/tv-build.yml']
+  pull_request:
+    paths: ['android-tv/**', 'native-tv/**', 'tv/**', 'maidong-server/**', '.github/workflows/tv-build.yml']
+permissions:
+  contents: read
+jobs:
+  native-apk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 native-tv/tools/check_native_libs.py
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools platforms;android-35 build-tools;35.0.0'
+          log-accepted-android-sdk-licenses: false
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.7'
+      - run: gradle -p native-tv --no-daemon :app:assembleDebug :app:testDebugUnitTest
+      - uses: actions/upload-artifact@v4
+        with:
+          name: MDKTV-native-TV-debug
+          path: native-tv/app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: MDKTV-native-TV-test-results
+          path: native-tv/app/build/test-results/testDebugUnitTest/
+  server:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node maidong-server/test/ts-integrity-smoke.js
+      - run: node --test maidong-server/test/server-smoke.cjs
+  apk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools platforms;android-35 build-tools;35.0.0'
+          log-accepted-android-sdk-licenses: false
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.7'
+      - run: gradle -p android-tv --no-daemon :app:assembleDebug
+      - run: sdkmanager 'platforms;android-35' 'build-tools;35.0.0'
+      - run: bash tv/build.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: MDKTV-TV-debug-APKs
+          path: |
+            android-tv/app/build/outputs/apk/debug/*.apk
+            artifacts/tv/MDKTV-TV-0.1.0-debug.apk
+          if-no-files-found: error

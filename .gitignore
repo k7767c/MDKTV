@@ -21,3 +21,15 @@ pitch-venv/
 score-cache/
 models/
 node_modules/
+android-tv/.gradle/
+android-tv/build/
+android-tv/app/build/
+android-tv/local.properties
+native-tv/.gradle/
+native-tv/build/
+native-tv/app/build/
+native-tv/local.properties
+native-tv/.idea/
+native-tv/database_publish/output/
+maidong-server/mv/
+*.log

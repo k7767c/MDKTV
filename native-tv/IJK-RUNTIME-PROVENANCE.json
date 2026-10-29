@@ -1,0 +1,42 @@
+{
+  "repository": "https://github.com/QiuYiLiang/maidong-ktv",
+  "commit": "8f84c4e5543c55689a08ebe821e1976c17a23a38",
+  "existingRuntimeByteMatches": [
+    {
+      "path": "app/libs/original-ijk-runtime.jar",
+      "sha256": "24560149cf64d93854640cebc6eb25f30423ef1f34666bc5e16c47f641941676"
+    },
+    {
+      "path": "app/src/main/jniLibs/armeabi-v7a/libijksdl.so",
+      "sha256": "f85a777f150d95eb8cd985612a7ac22a6397b1a842e48d52b1d023d77cf9fdd0"
+    },
+    {
+      "path": "app/src/main/jniLibs/armeabi-v7a/libc++_shared.so",
+      "sha256": "37bdc691d922f48dd047a703f824bd853bbab282fb816dd02f763919b7a28351"
+    },
+    {
+      "path": "app/src/main/jniLibs/armeabi-v7a/libijkplayer.so",
+      "sha256": "b2225e13789df446a2d852f6f75c4214287693703721c6836f38e20cb56d402d"
+    },
+    {
+      "path": "app/src/main/jniLibs/arm64-v8a/libijksdl.so",
+      "sha256": "154309a70d0489ab02b13f68d353ea9896a2de4e74400fdf35718c24325a8ae7"
+    },
+    {
+      "path": "app/src/main/jniLibs/arm64-v8a/libijkplayer.so",
+      "sha256": "f09bda74c2e05eaa7c6193449b5cf61eed388fdfa33b129a5dd8c356a70fab2f"
+    }
+  ],
+  "restoredMissingDependencies": [
+    {
+      "path": "app/src/main/jniLibs/arm64-v8a/libijkffmpeg.so",
+      "sha256": "db7e269094027e594267401a541c19a38e57f9ec8132f75d113c1ffd180025fc",
+      "bytes": 4284696
+    },
+    {
+      "path": "app/src/main/jniLibs/armeabi-v7a/libijkffmpeg.so",
+      "sha256": "9ada7624ad27eb382e2af0def53b2b1228470ac90ad4947f7b905af8f8d5b1d9",
+      "bytes": 3493800
+    }
+  ]
+}

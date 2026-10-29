@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>手机话筒</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body {
+    font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
+    background:#1a1024; color:#fff; min-height:100vh; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; padding:24px; user-select:none;
+  }
+  h1 { font-size:26px; margin-bottom:6px; }
+  .sub { font-size:14px; color:#b9a8d0; margin-bottom:28px; text-align:center; line-height:1.6; }
+  #btn {
+    width:210px; height:210px; border-radius:50%; border:none; outline:none;
+    background:linear-gradient(145deg,#e0457b,#7b2ff7); color:#fff;
+    font-size:26px; font-weight:700; cursor:pointer; margin-bottom:26px;
+    box-shadow:0 8px 32px rgba(224,69,123,.4); transition:transform .12s;
+  }
+  #btn:active { transform:scale(.94); }
+  #btn.on { background:linear-gradient(145deg,#2ecc71,#1a8f5a); box-shadow:0 8px 32px rgba(46,204,113,.4); }
+  #btn:disabled { background:#4a3d5c; box-shadow:none; opacity:.6; }
+  .card {
+    width:100%; max-width:420px; background:rgba(255,255,255,.06);
+    border-radius:14px; padding:16px 18px; font-size:14px; line-height:1.9;
+  }
+  .card div { display:flex; justify-content:space-between; }
+  .k { color:#b9a8d0; }
+  .v { font-weight:600; }
+  .ok { color:#2ecc71; } .bad { color:#ff6b6b; } .warn { color:#ffa502; }
+  #tip { margin-top:20px; font-size:13px; color:#8b7ba3; text-align:center; line-height:1.7; }
+  #meter { width:100%; max-width:420px; height:8px; background:rgba(255,255,255,.1);
+           border-radius:4px; overflow:hidden; margin:16px 0 4px; }
+  #meterfill { height:100%; width:0%; background:linear-gradient(90deg,#2ecc71,#ffa502); transition:width .1s; }
+</style>
+</head>
+<body>
+<h1>🎤 手机话筒</h1>
+<div class="sub">把这个手机当麦克风用，唱出来的声音从车机喇叭出来</div>
+
+<button id="btn" onclick="toggle()">开启话筒</button>
+
+<div id="meter"><div id="meterfill"></div></div>
+
+<div class="card">
+  <div><span class="k">状态</span><span class="v" id="st">未开启</span></div>
+  <div><span class="k">连接车机</span><span class="v" id="srv">检测中…</span></div>
+  <div><span class="k">输入电平</span><span class="v" id="lvl">—</span></div>
+  <div><span class="k">发送速率</span><span class="v" id="rate">—</span></div>
+  <div><span class="k">啸叫保护</span><span class="v" id="howl">正常</span></div>
+</div>
+
+<div id="tip">
+  ⚠️ 唱歌时手机离车机喇叭远一点，避免啸叫<br>
+  唱完记得点"关闭话筒"，别一直开着
+</div>
+
+<script>
+const SAMPLE_RATE = 16000;
+const FRAME_MS = 40;
+const CLIENT_ID = 'mic-' + Math.random().toString(36).slice(2, 10);
+// P0-1：API token。从 /mic/status 首次注册响应回填（平滑升级），或页面注入 window.__KTV_TOKEN__。
+let TOKEN = (window.__KTV_TOKEN__ || '').trim();
+const tokenQuery = () => TOKEN ? ('&token=' + TOKEN) : '';
+// 车机地址：从页面 URL 推断（页面本身是从车机 http://IP:PORT/mic.html 打开的）
+const SERVER = location.origin;
+const PUSH_URL = SERVER + '/mic/push?id=' + CLIENT_ID;
+const STATUS_URL = SERVER + '/mic/status?id=' + CLIENT_ID + '&state=';
+
+let audioCtx = null, source = null, processor = null, stream = null;
+let sending = false, samplesSent = 0, lastRateAt = 0, lastRateBytes = 0;
+let serverGain = 1.0;   // 车机下发的采集增益（啸叫伺服）
+let pending = new Int16Array(0);
+
+const $ = id => document.getElementById(id);
+
+function setSt(txt, cls) { $('st').innerHTML = '<span class="' + (cls||'') + '">' + txt + '</span>'; }
+
+async function toggle() {
+  if (sending) { stop(); return; }
+  $('btn').disabled = true;
+  try {
+    setSt('请求麦克风权限…');
+    stream = await navigator.mediaDevices.getUserMedia({
+      audio: {
+        echoCancellation: true,      // 抑制喇叭漏音（车内啸叫主要来源）
+        noiseSuppression: true,
+        autoGainControl: true,       // 手机侧自动增益，弱网丢包时听感更稳
+        channelCount: 1
+      }
+    });
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: SAMPLE_RATE });
+    if (audioCtx.state === 'suspended') await audioCtx.resume();
+    source = audioCtx.createMediaStreamSource(stream);
+    // 采集增益节点：车机说啸叫了就往下压
+    const gainNode = audioCtx.createGain();
+    gainNode.gain.value = 1.0;
+    source.connect(gainNode);
+    // 延迟优化：采集缓冲 4096 → 1024（256ms → 64ms），与 index.html 话筒页保持一致
+    processor = audioCtx.createScriptProcessor(1024, 1, 1);
+    gainNode.connect(processor);
+    // ScriptProcessor 不接目的地会停摆，必须接到一个静默增益再连到 destination
+    const mute = audioCtx.createGain(); mute.gain.value = 0;
+    processor.connect(mute); mute.connect(audioCtx.destination);
+    window.__gainNode = gainNode;
+
+    processor.onaudioprocess = e => {
+      if (!sending) return;
+      const input = e.inputBuffer.getChannelData(0);
+      const out = new Int16Array(input.length);
+      for (let i=0;i<input.length;i++) {
+        let s = Math.max(-1, Math.min(1, input[i]));
+        out[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+      }
+      enqueue(out);
+      meter(input);
+    };
+
+    sending = true;
+    $('btn').innerHTML = '关闭话筒';
+    $('btn').className = 'on';
+    $('btn').disabled = false;
+    setSt('传输中', 'ok');
+    reportStatus('on');
+    clearInterval(window.__rateTimer);
+    window.__rateTimer = setInterval(rateTick, 1000);
+    // v1.2.13：心跳保活 —— 每 2s 报一次 status，手机断流回来自动续推
+    startHeartbeat();
+  } catch (e) {
+    setSt('麦克风打不开', 'bad');
+    $('btn').disabled = false;
+    alert('无法使用麦克风：' + (e && e.message ? e.message : e) +
+      '\n\niPhone 不支持在 http 内网页面用麦克风，请用安卓手机。');
+  }
+}
+
+function stop() {
+  sending = false;
+  clearInterval(window.__micHb);   // v1.2.13：停心跳
+  try { if (processor) { processor.onaudioprocess = null; processor.disconnect(); } } catch(e){}
+  try { if (source) source.disconnect(); } catch(e){}
+  try { if (stream) stream.getTracks().forEach(t => t.stop()); } catch(e){}
+  try { if (audioCtx) audioCtx.close(); } catch(e){}
+  audioCtx = source = processor = stream = null;
+  pending = new Int16Array(0);
+  samplesSent = 0; lastRateAt = 0; lastRateBytes = 0; serverGain = 1.0;
+  lastPushAt = 0;
+  clearInterval(window.__rateTimer);
+  $('btn').innerHTML = '开启话筒';
+  $('btn').className = '';
+  $('meterfill').style.width = '0%';
+  setSt('已关闭');
+  $('rate').textContent = '—'; $('lvl').textContent = '—';
+  $('howl').textContent = '正常'; $('howl').className = 'v';
+  reportStatus('off');
+}
+
+function meter(input) {
+  let peak = 0;
+  for (let i=0;i<input.length;i++) { const a = Math.abs(input[i]); if (a > peak) peak = a; }
+  $('meterfill').style.width = Math.min(100, (peak*100).toFixed(0)) + '%';
+  $('lvl').textContent = (peak*100).toFixed(0) + '%';
+}
+
+function enqueue(chunk) {
+  // 累积到 FRAME_MS 的采样数再发一包（16k × 40ms = 640 samples）
+  const need = SAMPLE_RATE * FRAME_MS / 1000;
+  const merged = new Int16Array(pending.length + chunk.length);
+  merged.set(pending); merged.set(chunk, pending.length);
+  let off = 0;
+  while (merged.length - off >= need) {
+    const slice = merged.slice(off, off + need);
+    off += need;
+    send(slice);
+  }
+  pending = merged.slice(off);
+}
+
+function send(pcm) {
+  samplesSent += pcm.length;
+  lastPushAt = Date.now();
+  // v1.2.13：断流补帧 —— 若距上次推送已超 3 帧（120ms），先补发静音帧对齐时间轴，
+  // 再发真实数据。弱网丢包时这能避免 AudioTrack 抠出硬缺口爆音，比"等下一包"稳。
+  const gap = Date.now() - lastPushAt;
+  if (lastPushAt && gap > 120) {
+    const padCount = Math.min(Math.floor(gap / FRAME_MS), 5);
+    for (let k = 0; k < padCount; k++) pushSilence();
+  }
+  // P0-1：push 带 token（页面注入或 /mic/status 回填）。无 token 时旧逻辑照常，平滑升级。
+  const pushUrl = PUSH_URL + (TOKEN ? ('&token=' + TOKEN) : '');
+  fetch(pushUrl, {
+    method:'POST',
+    body: pcm.buffer,
+    keepalive: true,
+    headers: TOKEN ? { 'X-Ktv-Token': TOKEN } : {}
+  })
+  .then(r => r.json())
+  .then(j => {
+    // P0-1：车机回填的 token 持久化，后续请求自动带上
+    if (j && j.token) TOKEN = j.token;
+    if (j && typeof j.gain === 'number') {
+      serverGain = j.gain;
+      const gn = window.__gainNode;
+      if (gn) gn.gain.setTargetAtTime(serverGain, audioCtx.currentTime, 0.05);
+      if (j.gain < 1) { $('howl').textContent = '啸叫保护已压低输入'; $('howl').className = 'v warn'; }
+      else { $('howl').textContent = '正常'; $('howl').className = 'v ok'; }
+    }
+    $('srv').innerHTML = '<span class="ok">已连接</span>';
+  })
+  .catch(() => {
+    $('srv').innerHTML = '<span class="bad">已断开</span>';
+    setSt('传输中断（检查是否还在同一网络）', 'bad');
+  });
+}
+
+/** 补发一帧静音（对齐时间轴，弱网丢包时防硬缺口爆音）。 */
+function pushSilence() {
+  if (!sending) return;
+  fetch(PUSH_URL + (TOKEN ? ('&token=' + TOKEN) : ''), {
+    method:'POST', body: silenceFrame.buffer, keepalive: true,
+    headers: TOKEN ? { 'X-Ktv-Token': TOKEN } : {}
+  }).catch(() => {});
+}
+
+/** v1.2.13：心跳保活 —— 每 2s 报一次 status，断流回来自动续推（切后台/锁屏恢复）。 */
+function startHeartbeat() {
+  clearInterval(window.__micHb);
+  window.__micHb = setInterval(() => {
+    if (!sending) return;
+    report('alive');   // 保持车机端 lastSeen 更新，不触发 12s 宽限
+  }, 2000);
+}
+
+function rateTick() {
+  const now = Date.now();
+  const bytes = samplesSent * 2;
+  if (lastRateAt > 0) {
+    const kbps = ((bytes - lastRateBytes) / 1024) / ((now - lastRateAt)/1000);
+    $('rate').textContent = kbps.toFixed(0) + ' KB/s';
+  }
+  lastRateAt = now;
+  lastRateBytes = bytes;
+}
+
+function reportStatus(state) {
+  // P0-1：probe（首次注册）不带 token 也可放行 —— 车机从响应回填 token；
+  // 后续 on/off 带 token。
+  const tokenParam = (state === 'probe' && !TOKEN) ? '' : (TOKEN ? ('&token=' + TOKEN) : '');
+  const url = STATUS_URL + state + tokenParam;
+  const opts = { method:'POST' };
+  if (TOKEN && state !== 'probe') opts.headers = { 'X-Ktv-Token': TOKEN };
+  fetch(url, opts)
+    .then(r => r.json())
+    .then(j => { if (j && j.token) TOKEN = j.token; })
+    .catch(()=>{});
+}
+
+// 初始探测车机（probe 不带 token，响应里回填）
+fetch(STATUS_URL + 'probe', { method:'POST' })
+  .then(r => r.json())
+  .then(j => {
+    if (j && j.token) TOKEN = j.token;
+    $('srv').innerHTML = '<span class="ok">已连接</span>';
+  })
+  .catch(() => $('srv').innerHTML = '<span class="bad">连不上车机</span>');
+</script>
+</body>
+</html>
